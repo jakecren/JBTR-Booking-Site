@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 from sendgrid import SendGridAPIClient
 from bookingApp.config import Config
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+# login_manager = LoginManager()
 
 def splitChars(string):
     return [st for st in string]
@@ -18,6 +20,7 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     bcrypt.init_app(app)
+    # login_manager.init_app(app)
 
     from bookingApp.main.routes import main
     from bookingApp.errors.handlers import errors
