@@ -1,0 +1,8 @@
+Flask
+flask-wtf
+flask-login
+flask-sqlalchemy
+flask-bcrypt
+pytz
+Pillow
+sendgrid
