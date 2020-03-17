@@ -5,5 +5,9 @@ main = Blueprint("main", __name__)
 #####  Splash  #####
 @main.route("/")
 def splash():
-    return render_template("splash.html", title="ATC Blog")
+    return render_template("splash.html", title="JBTR RSVP")
 
+####  Generic  #####
+@main.route("/generic")
+def generic():
+    return render_template("generic.html", title="*GENERIC*")
