@@ -11,14 +11,14 @@ users = Blueprint("users", __name__)
 @users.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.elements"))
+        return redirect(url_for("users.admin"))
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(email=str(form.email.data).lower()).first()
         if user and form.password.data == user.password:
             login_user(user, remember=form.remember.data)
             next_page = request.args.get("next")
-            return redirect(next_page) if next_page else redirect(url_for("main.generic"))
+            return redirect(next_page) if next_page else redirect(url_for("users.admin"))
         else:
             flash("Login unsuccessful.  Please check email and password!", "danger")
     return render_template("login.html", title="Login", form=form)
@@ -29,3 +29,10 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("main.splash"))
+
+
+#####  Admin  ######
+@users.route("/admin")
+@login_required
+def admin():
+    return render_template("admin.html", title="Admin")
