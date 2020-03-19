@@ -1,11 +1,12 @@
-from bookingApp import db#, login_manager
+from bookingApp import db, login_manager
 from flask import current_app
+from flask_login import UserMixin
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return Users.query.get(int(user_id))
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     forename = db.Column(db.String(60), nullable=False)
     surname = db.Column(db.String(60), nullable=False)

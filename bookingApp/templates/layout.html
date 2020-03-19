@@ -17,16 +17,30 @@
 
 	<!-- Header -->
 	<header id="header">
-		<h1><a href="#">JBTR <span>RSVP System</span></a></h1>
+		<h1><a href="{{ url_for('main.splash') }}">JBTR <span>RSVP System</span></a></h1>
 		<a href="#menu">Menu</a>
+
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+		<div class="inner box"
+			style="background-color: #0e3961cc; max-width: fit-content; max-height: fit-content; margin-top: 1%; margin-left: 1%;">
+			{% for category, message in messages  %}
+			<span>
+				{{ message }}
+			</span>
+			{% endfor %}
+		</div>
+		{% endif %}
+		{% endwith %}
 	</header>
 
 	<!-- Nav -->
 	<nav id="menu">
 		<ul class="links">
-			<li><a href="{{ url_for('main.splash') }}.html">Home</a></li>
+			<li><a href="{{ url_for('main.splash') }}">Home</a></li>
 			<li><a href="{{ url_for('main.generic') }}">Generic</a></li>
-			<li><a href="elements.html">Elements</a></li>
+			<li><a href="{{ url_for('main.elements') }}">Elements</a></li>
+			<li><a href="{{ url_for('users.login') }}">Login</a></li>
 		</ul>
 	</nav>
 

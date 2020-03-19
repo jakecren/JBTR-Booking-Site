@@ -7,7 +7,9 @@ from bookingApp.config import Config
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-# login_manager = LoginManager()
+login_manager = LoginManager()
+login_manager.login_view = "users.login"
+login_manager.login_message_category = "info"
 
 def splitChars(string):
     return [st for st in string]
@@ -20,12 +22,14 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     bcrypt.init_app(app)
-    # login_manager.init_app(app)
+    login_manager.init_app(app)
 
     from bookingApp.main.routes import main
+    from bookingApp.users.routes import users
     from bookingApp.errors.handlers import errors
 
     app.register_blueprint(main)
+    app.register_blueprint(users)
     app.register_blueprint(errors)
 
     return app
