@@ -1,0 +1,169 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<!-- Main -->
+<div id="main">
+
+	<!-- One -->
+	<section class="wrapper style1">
+		<div class="inner">
+			<header class="align-center">
+				<h2>RSVP</h2>
+			</header>
+			<p>If you would like to RSVP your attendance and have not already done so, please follow the steps below</p>
+		</div>
+
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<!-- Customer Details Form Page -->
+			<div class="inner box" style="width: 60%;">
+				<div class="row uniform">
+					<h3>User Details</h3>
+
+					<!-- Forename -->
+					<div class="12u$ 12u$(small)">
+						<label for="forename" style="font-size: medium;">Forename:</label>
+						{% if form.forename.errors %}
+						{{ form.forename(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.forename.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.forename(placeholder="Enter forename") }}
+						{% endif %}
+					</div>
+
+					<!-- Surname -->
+					<div class="12u$ 12u$(small)">
+						<label for="surname" style="font-size: medium;">Surname:</label>
+						{% if form.surname.errors %}
+						{{ form.surname(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.surname.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.surname(placeholder="Enter surname") }}
+						{% endif %}
+					</div>
+
+					<!-- Email -->
+					<div class="12u$ 12u$(small)">
+						<label for="email" style="font-size: medium;">Email:</label>
+						{% if form.email.errors %}
+						{{ form.email(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.email.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.email(placeholder="Enter Email") }}
+						{% endif %}
+					</div>
+
+					<!-- Mobile -->
+					<div class="12u$ 12u$(small)">
+						<label for="mobile" style="font-size: medium;">Mobile:</label>
+						{% if form.mobile.errors %}
+						{{ form.mobile(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.mobile.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.mobile(placeholder="Enter mobile") }}
+						{% endif %}
+					</div>
+
+					<!-- Street -->
+					<div class="12u$ 12u$(small)">
+						<label for="street" style="font-size: medium;">Street:</label>
+						{% if form.street.errors %}
+						{{ form.street(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.street.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.street(placeholder="Enter street") }}
+						{% endif %}
+					</div>
+
+					<!-- Suburb -->
+					<div class="12u$ 12u$(small)">
+						<label for="suburb" style="font-size: medium;">Suburb:</label>
+						{% if form.suburb.errors %}
+						{{ form.suburb(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.suburb.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.suburb(placeholder="Enter suburb") }}
+						{% endif %}
+					</div>
+
+					<!-- City -->
+					<div class="12u$ 12u$(small)">
+						<label for="city" style="font-size: medium;">City:</label>
+						{% if form.city.errors %}
+						{{ form.city(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.city.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.city(placeholder="Enter city") }}
+						{% endif %}
+					</div>
+
+					<!-- State -->
+					<div class="12u$ 12u$(small)">
+						<label for="state" style="font-size: medium;">State:</label>
+						{% if form.state.errors %}
+						{{ form.state(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.state.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.state(placeholder="Enter state") }}
+						{% endif %}
+					</div>
+
+					<!-- Postcode -->
+					<div class="12u$ 12u$(small)">
+						<label for="postcode" style="font-size: medium;">Postcode:</label>
+						{% if form.postcode.errors %}
+						{{ form.postcode(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.postcode.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.postcode(placeholder="Enter postcode") }}
+						{% endif %}
+					</div>
+
+					<!-- Submit Button -->
+					<div class="12u$">
+						{{ form.submit(class="button special") }}
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</section>
+</div>
+
+{% endblock content %}
