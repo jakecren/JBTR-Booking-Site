@@ -10,8 +10,8 @@ class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     forename = db.Column(db.String(60), nullable=False)
     surname = db.Column(db.String(60), nullable=False)
-    email = db.Column(db.String(110), nullable=False)
-    mobile = db.Column(db.String(12), nullable=False)
+    email = db.Column(db.String(110), nullable=False, unique=True)
+    mobile = db.Column(db.String(12), nullable=False, unique=True)
     password = db.Column(db.String(60), nullable=False)
     admin = db.Column(db.Integer, nullable=False)
 
