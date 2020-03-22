@@ -8,7 +8,39 @@
 			<header class="align-center">
 				<h2>Admin Page</h2>
 			</header>
+
+			<!-- Vendors Present -->
+			<h4>Vendors</h4>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Mobile</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							{% for vendor in vendors %}
+							<td>
+								<a href="#">{{ vendor.name }}</a>
+							</td>
+							<td>
+								{{ vendor.email }}
+							</td>
+							<td>
+								{{ vendor.mobile }}
+							</td>
+							{% endfor %}
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Logout -->
 			<a href="/logout" class="button special">Logout</a>
+
 		</div>
 	</section>
 </div>

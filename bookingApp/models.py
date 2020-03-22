@@ -40,7 +40,7 @@ class Customers(db.Model):
         return f"Customer: {self.forename} {self.surname} ({self.email}, {self.mobile}, {self.street}, {self.suburb}, {self.city}, {self.state}, {self.postcode}, {self.id})"
 
 
-class Vendors(db.Model):
+class Vendors(db.Model): #Company info (company name, company email etc.)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(60), nullable=False)

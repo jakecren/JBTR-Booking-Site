@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint,
 from flask_login import login_user, current_user, logout_user, login_required
 from bookingApp import db, bcrypt
 from bookingApp.users.forms import LoginForm
-from bookingApp.models import Users
+from bookingApp.models import Users, Vendors
 
 users = Blueprint("users", __name__)
 
@@ -35,4 +35,5 @@ def logout():
 @users.route("/admin")
 @login_required
 def admin():
-    return render_template("admin.html", title="Admin")
+    vendors = Vendors.query.all()
+    return render_template("admin.html", title="Admin", vendors=vendors)
