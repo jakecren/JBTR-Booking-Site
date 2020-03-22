@@ -42,9 +42,9 @@ class Customers(db.Model):
 
 class Vendors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), nullable=False)
-    email = db.Column(db.String(60), nullable=False)
-    mobile = db.Column(db.String(12), nullable=False)
+    name = db.Column(db.String(60), nullable=False, unique=True)
+    email = db.Column(db.String(60), nullable=False, unique=True)
+    mobile = db.Column(db.String(12), nullable=False, unique=True)
     userID = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     products = db.relationship("Products")
@@ -66,7 +66,7 @@ class ReferenceNumbers(db.Model):
 
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), nullable=False)
+    name = db.Column(db.String(60), nullable=False, unique=True)
     description = db.Column(db.String(255))
     vendorID = db.Column(db.Integer, db.ForeignKey("vendors.id"), nullable=False)
     price = db.Column(db.Float, nullable = False)
