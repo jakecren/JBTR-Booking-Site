@@ -21,8 +21,8 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for vendor in vendors %}
 						<tr>
-							{% for vendor in vendors %}
 							<td>
 								<a href="#">{{ vendor.name }}</a>
 							</td>
@@ -32,14 +32,17 @@
 							<td>
 								{{ vendor.mobile }}
 							</td>
-							{% endfor %}
 						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
 
+			<!-- Register Vendor -->
+			<a href="/registerVendor" class="button">Register Vendor</a>
+
 			<!-- Logout -->
-			<a href="/logout" class="button special">Logout</a>
+			<a href="{{ url_for('users.logout') }}" class="button special">Logout</a>
 
 		</div>
 	</section>
