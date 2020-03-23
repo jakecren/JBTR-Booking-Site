@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_login import current_user
-from bookingApp.models import Users, Vendors
+from bookingApp.models import Users, Vendors, Products
 
 
 class LoginForm(FlaskForm):
@@ -53,3 +53,16 @@ class RegisterVendorForm(FlaskForm):
         vendor = Vendors.query.filter_by(mobile=companyMobile.data).first()
         if vendor:
             raise ValidationError("Company mobile is unavailable, please choose a different Company mobile.")
+
+
+class AddProductForm(FlaskForm):
+    name = StringField("Product Name:", validators=[DataRequired()])
+    description = StringField("Description:")
+    price = FloatField("Price:", validators=[DataRequired()])
+    submit = SubmitField("Add Product")
+
+    # Validate unique fields
+    def validate_name(self, name):
+        vendor = Vendors.query.filter_by(name=name.data).first()
+        if vendor:
+            raise ValidationError("Name is unavailable, please choose a different name.")

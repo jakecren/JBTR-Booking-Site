@@ -1,8 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from bookingApp import db, bcrypt
-from bookingApp.users.forms import LoginForm, RegisterVendorForm
-from bookingApp.models import Users, Vendors
+from bookingApp.users.forms import LoginForm, RegisterVendorForm, AddProductForm
+from bookingApp.models import Users, Vendors, Products
 
 users = Blueprint("users", __name__)
 
@@ -26,6 +26,7 @@ def login():
 
 #####  Logout  ######
 @users.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("main.splash"))
@@ -39,7 +40,16 @@ def admin():
     return render_template("admin.html", title="Admin", vendors=vendors)
 
 
-##### Register Vendor #####
+#####  Vendor Product View  #####
+@users.route("/VPView/<int:id>")
+@login_required
+def vendorProductView(id):
+    vendor = Vendors.query.filter_by(id=id).first_or_404()
+    products = Products.query.filter_by(vendorID=id)
+    return render_template("vendorProductView.html", title="Vendor Product View", vendor=vendor, products=products)
+
+
+#####  Register Vendor  #####
 @users.route("/registerVendor", methods=["GET", "POST"])
 @login_required
 def registerVendor():
@@ -62,3 +72,17 @@ def registerVendor():
         flash("Vendor Registered", "success")
         return redirect(url_for("users.admin"))
     return render_template("registerVendor.html", title="Register Vendor", form=form)
+
+
+#####  Add Product  #####
+@users.route("/addproduct/<int:id>", methods=["GET", "POST"])
+@login_required
+def addProduct(id):
+    form = AddProductForm()
+    if form.validate_on_submit():
+        product = Products(name=form.name.data, description=form.description.data, price=form.price.data, vendorID=id)
+        db.session.add(product)
+        db.session.commit()
+        flash("Product Added", "success")
+        return redirect(url_for("users.admin"))
+    return render_template("addProduct.html", title="Add Product", form=form)

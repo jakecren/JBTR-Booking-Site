@@ -24,7 +24,7 @@
 						{% for vendor in vendors %}
 						<tr>
 							<td>
-								<a href="#">{{ vendor.name }}</a>
+								<a href="{{ url_for('users.vendorProductView', id=vendor.id) }}">{{ vendor.name }}</a>
 							</td>
 							<td>
 								{{ vendor.email }}
@@ -39,7 +39,7 @@
 			</div>
 
 			<!-- Register Vendor -->
-			<a href="/registerVendor" class="button">Register Vendor</a>
+			<a href="{{ url_for('users.registerVendor') }}" class="button">Register Vendor</a>
 
 			<!-- Logout -->
 			<a href="{{ url_for('users.logout') }}" class="button special">Logout</a>
