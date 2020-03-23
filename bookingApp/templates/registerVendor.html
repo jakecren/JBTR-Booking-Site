@@ -1,0 +1,156 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<!-- Main -->
+<div id="main">
+
+	<!-- One -->
+	<section class="wrapper style1">
+		<div class="inner box">
+			<div class="container" style="width: 90%;">
+				<form method="POST" action="">
+					{{ form.hidden_tag() }}
+					<h2 class="align-center">Register Vendor</h2>
+					<div class="row uniform">
+
+						<!-- Text Inputs -->
+						<div class="12u$ 12u$(small)">
+							{{ form.forename.label(style="font-size: medium;") }}
+							{% if form.forename.errors %}
+							{{ form.forename(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.forename.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.forename(placeholder="Enter Forename") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.surname.label(style="font-size: medium;") }}
+							{% if form.surname.errors %}
+							{{ form.surname(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.surname.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.surname(placeholder="Enter Surname") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.email.label(style="font-size: medium;") }}
+							{% if form.email.errors %}
+							{{ form.email(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.email.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.email(placeholder="Enter Email") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.mobile.label(style="font-size: medium;") }}
+							{% if form.mobile.errors %}
+							{{ form.mobile(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.mobile.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.mobile(placeholder="Enter Mobile") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.password.label(style="font-size: medium;") }}
+							{% if form.password.errors %}
+							{{ form.password(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.password.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.password(placeholder="Enter Password") }}
+							{% endif %}
+						</div>
+
+						<div class="12u 12u$(small)">
+							{{ form.confirmPassword.label(style="font-size: medium;") }}
+							{% if form.confirmPassword.errors %}
+							{{ form.confirmPassword(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.confirmPassword.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.confirmPassword(placeholder="Confirm Password") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.companyName.label(style="font-size: medium;") }}
+							{% if form.companyName.errors %}
+							{{ form.companyName(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.companyName.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.companyName(placeholder="Enter Company Name") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.companyEmail.label(style="font-size: medium;") }}
+							{% if form.companyEmail.errors %}
+							{{ form.companyEmail(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.companyEmail.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.companyEmail(placeholder="Enter Company Email") }}
+							{% endif %}
+						</div>
+
+						<div class="12u$ 12u$(small)">
+							{{ form.companyMobile.label(style="font-size: medium;") }}
+							{% if form.companyMobile.errors %}
+							{{ form.companyMobile(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.companyMobile.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.companyMobile(placeholder="Enter Company Mobile") }}
+							{% endif %}
+						</div>
+
+						<!-- Button -->
+						<div class="12u$">
+							{{ form.submit }}
+						</div>
+
+						<div></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+</div>
+
+{% endblock content %}
