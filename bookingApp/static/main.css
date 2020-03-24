@@ -2138,6 +2138,7 @@
 
 	input[type="text"],
 	input[type="password"],
+	input[type="number"],
 	input[type="email"],
 	select,
 	textarea {
@@ -2157,6 +2158,7 @@
 	}
 
 		input[type="text"]:invalid,
+		input[type="number"]:invalid,
 		input[type="password"]:invalid,
 		input[type="email"]:invalid,
 		select:invalid,
@@ -2198,6 +2200,7 @@
 
 	input[type="text"],
 	input[type="password"],
+	input[type="number"],
 	input[type="email"],
 	select {
 		height: 2.75em;
@@ -2222,6 +2225,7 @@
 	}
 
 		input[type="checkbox"] + label,
+		input[type="number"] + label,
 		input[type="radio"] + label {
 			text-decoration: none;
 			cursor: pointer;
@@ -2234,6 +2238,7 @@
 		}
 
 			input[type="checkbox"] + label:before,
+			input[type="number"] + label:before,
 			input[type="radio"] + label:before {
 				-moz-osx-font-smoothing: grayscale;
 				-webkit-font-smoothing: antialiased;
@@ -2244,6 +2249,7 @@
 			}
 
 			input[type="checkbox"] + label:before,
+			input[type="number"] + label:before,
 			input[type="radio"] + label:before {
 				border-radius: 4px;
 				border: solid 1px;
@@ -2263,7 +2269,8 @@
 			content: '\f00c';
 		}
 
-	input[type="checkbox"] + label:before {
+	input[type="checkbox"] + label:before,
+	input[type="number"] {
 		border-radius: 4px;
 	}
 
@@ -2297,6 +2304,7 @@
 
 	input[type="text"],
 	input[type="password"],
+	input[type="number"],
 	input[type="email"],
 	select,
 	textarea {
@@ -2306,6 +2314,7 @@
 
 		input[type="text"]:focus,
 		input[type="password"]:focus,
+		input[type="number"]:focus,
 		input[type="email"]:focus,
 		select:focus,
 		textarea:focus {

@@ -1,0 +1,8 @@
+{% macro render_field(name) %}
+<div class="form-group">
+    {% if kwargs['label'] == True %}
+        {{ name.label(style="font-size: mediuml;") }}
+    {% endif %}
+    {{ name(placeholder=kwargs['placeholder'], class=kwargs['class'], type=kwargs['type'], default=kwargs['default'], max=kwargs['max'], min=kwargs['min'], style=kwargs['style'], value=kwargs['value']) }}
+</div>
+{% endmacro %}
