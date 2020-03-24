@@ -21,12 +21,7 @@ def rsvp():
         setattr(rsvpForm, product.name, IntegerField(product.name))
     form = rsvpForm()
     
-    if form.validate_on_submit():
-        """flash(f"{form.forename.data}, {form.surname.data}, {form.email.data}, {form.mobile.data}, {form.street.data}, {form.suburb.data}, {form.city.data}, {form.state.data}, {form.postcode.data}.")
-        flash(f"Tickets:\n{formProducts}")
-        for product in formProducts:
-            print("Ticket:", product, "- #:", getattr(form, product).data)"""
-        
+    if form.validate_on_submit():        
         Email = str(form.email.data).lower()
         customer = Customers(forename=form.forename.data, surname=form.surname.data, email=Email, mobile=form.mobile.data, street=form.street.data, suburb=form.suburb.data, city=form.city.data, state=form.state.data, postcode=form.postcode.data)
         db.session.add(customer)

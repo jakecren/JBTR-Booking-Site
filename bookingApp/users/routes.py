@@ -62,9 +62,8 @@ def registerVendor():
 
         user = Users(forename=form.forename.data, surname=form.surname.data, email=Email, mobile=form.mobile.data, password=hashedPassword, admin=0)
         db.session.add(user)
-        db.session.commit()
+        db.session.flush()
 
-        user = Users.query.filter_by(email=Email).first_or_404()
         vendor = Vendors(name=form.companyName.data, email=form.companyEmail.data, mobile=form.companyMobile.data, userID=user.id)
         db.session.add(vendor)
         db.session.commit()
