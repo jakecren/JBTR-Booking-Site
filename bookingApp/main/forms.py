@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, BooleanField
+from wtforms import StringField, SubmitField, BooleanField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_login import current_user
-from bookingApp.models import Customers
+from bookingApp.models import Customers, Products
 
 class rsvpForm(FlaskForm):
     # Customer Details
@@ -15,9 +15,6 @@ class rsvpForm(FlaskForm):
     city = StringField("City:", validators=[DataRequired()])
     state = StringField("State:", validators=[DataRequired()])
     postcode = StringField("Postcode", validators=[DataRequired(), Length(4, 4)])
-
-    # Ticket Selection
-    # TODO: Ticket Sleection Form
 
     # Submit
     submit = SubmitField("Submit")
