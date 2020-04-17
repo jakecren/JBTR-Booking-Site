@@ -6,3 +6,4 @@ flask-bcrypt
 pytz
 Pillow
 sendgrid
+pymysql
