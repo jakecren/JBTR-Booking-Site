@@ -40,56 +40,20 @@
 			<li><a href="{{ url_for('main.splash') }}">Home</a></li>
 			<li><a href="{{ url_for('main.generic') }}">Generic</a></li>
 			<li><a href="{{ url_for('main.elements') }}">Elements</a></li>
-			<li><a href="{{ url_for('users.login') }}">Login</a></li>
+			{% if current_user.is_authenticated %}
+			{% if current_user.administrator == 1 %}
+			<li><a href="{{ url_for('admins.panel') }}">Admin Panel</a></li>
+			{% else %}
+			<li><a href="{{ url_for('vendors.panel') }}">Vendor Panel</a></li>
+			{% endif %}
+			{% else %}
+			<li><a href="{{ url_for('main.login') }}">Login</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 
 	{% block content %} {% endblock content %}
 
-	<!-- Footer -->
-	<footer id="footer">
-		<div class="inner">
-			<div class="flex flex-3">
-				<div class="col">
-					<h3>Vestibullum</h3>
-					<ul class="alt">
-						<li><a href="#">Nascetur nunc varius commodo.</a></li>
-						<li><a href="#">Vis id faucibus montes tempor</a></li>
-						<li><a href="#">Massa amet lobortis vel.</a></li>
-						<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					</ul>
-				</div>
-				<div class="col">
-					<h3>Lobortis</h3>
-					<ul class="alt">
-						<li><a href="#">Nascetur nunc varius commodo.</a></li>
-						<li><a href="#">Vis id faucibus montes tempor</a></li>
-						<li><a href="#">Massa amet lobortis vel.</a></li>
-						<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					</ul>
-				</div>
-				<div class="col">
-					<h3>Accumsan</h3>
-					<ul class="alt">
-						<li><a href="#">Nascetur nunc varius commodo.</a></li>
-						<li><a href="#">Vis id faucibus montes tempor</a></li>
-						<li><a href="#">Massa amet lobortis vel.</a></li>
-						<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div class="copyright">
-			<ul class="icons">
-				<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-				<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-				<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-				<li><a href="#" class="icon fa-snapchat"><span class="label">Snapchat</span></a></li>
-			</ul>
-			&copy; Untitled. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a
-				href="https://unsplash.com">Coverr</a>. Video: <a href="https://coverr.co">Coverr</a>.
-		</div>
-	</footer>
 
 	<!-- Scripts -->
 	<script src="/static/js/jquery.min.js"></script>

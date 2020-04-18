@@ -1,47 +1,22 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from bookingApp import db, bcrypt
-from bookingApp.users.forms import LoginForm, RegisterVendorForm, AddProductForm
+from bookingApp.admins.forms import *
 from bookingApp.models import Users, Vendors, Products
 
-users = Blueprint("users", __name__)
+admins = Blueprint("admins", __name__)
 
 
-#####  Login  #####
-@users.route("/login", methods=["GET", "POST"])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("users.admin"))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Users.query.filter_by(email=str(form.email.data).lower()).first()
-        if user and form.password.data == user.password:
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get("next")
-            return redirect(next_page) if next_page else redirect(url_for("users.admin"))
-        else:
-            flash("Login unsuccessful.  Please check email and password!", "danger")
-    return render_template("login.html", title="Login", form=form)
-
-
-#####  Logout  ######
-@users.route("/logout")
+#####  Panel  ######
+@admins.route("/adminPanel")
 @login_required
-def logout():
-    logout_user()
-    return redirect(url_for("main.splash"))
-
-
-#####  Admin  ######
-@users.route("/admin")
-@login_required
-def admin():
+def panel():
     vendors = Vendors.query.all()
     return render_template("admin.html", title="Admin", vendors=vendors)
 
 
 #####  Vendor Product View  #####
-@users.route("/VPView/<int:id>")
+@admins.route("/VPView/<int:id>")
 @login_required
 def vendorProductView(id):
     vendor = Vendors.query.filter_by(id=id).first_or_404()
@@ -50,7 +25,7 @@ def vendorProductView(id):
 
 
 #####  Register Vendor  #####
-@users.route("/registerVendor", methods=["GET", "POST"])
+@admins.route("/registerVendor", methods=["GET", "POST"])
 @login_required
 def registerVendor():
     if current_user.admin != 1:
@@ -73,8 +48,8 @@ def registerVendor():
     return render_template("registerVendor.html", title="Register Vendor", form=form)
 
 
-#####  Add Product  #####
-@users.route("/addproduct/<int:id>", methods=["GET", "POST"])
+#####  Add Vendor Product  #####
+@admins.route("/addproduct/<int:id>", methods=["GET", "POST"])
 @login_required
 def addProduct(id):
     form = AddProductForm()
