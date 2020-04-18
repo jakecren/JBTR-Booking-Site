@@ -5,13 +5,6 @@ from flask_login import current_user
 from bookingApp.models import Users, Vendors, Products
 
 
-class LoginForm(FlaskForm):
-    email = StringField("Email:", validators=[DataRequired(), Email()])
-    password = PasswordField("Password:", validators=[DataRequired()])
-    remember = BooleanField("Remember Me:")
-    submit = SubmitField("Log In")
-
-
 class RegisterVendorForm(FlaskForm):
     # Account Info
     forename = StringField("Forename:", validators=[DataRequired()])

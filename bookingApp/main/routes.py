@@ -1,8 +1,9 @@
 from flask import render_template, request, Blueprint, redirect, url_for, flash
-from bookingApp.main.forms import rsvpForm
+from bookingApp.main.forms import *
 from bookingApp import db
-from bookingApp.models import Customers, Products, ReferenceNumbers, Orders
+from bookingApp.models import *
 from wtforms import IntegerField
+from flask_login import login_user, logout_user, current_user, login_required
 
 
 main = Blueprint("main", __name__)
@@ -40,6 +41,31 @@ def rsvp():
         db.session.commit()
 
     return render_template("rsvp.html", title="RSVP", form=form, products=products)
+
+
+#####  Login  #####
+@main.route("/login", methods=["GET", "POST"])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("admins.panel"))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=str(form.email.data).lower()).first()
+        if user and form.password.data == user.password:
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get("next")
+            return redirect(next_page) if next_page else redirect(url_for("admins.panel"))
+        else:
+            flash("Login unsuccessful.  Please check email and password!", "danger")
+    return render_template("login.html", title="Login", form=form)
+
+
+#####  Logout  ######
+@main.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("main.splash"))
 
 
 #####  Generic  #####
