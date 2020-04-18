@@ -6,12 +6,12 @@ from wtforms import IntegerField
 from flask_login import login_user, logout_user, current_user, login_required
 
 
-main = Blueprint("main", __name__)
+main = Blueprint("main", __name__, template_folder='templates')
 
 #####  Splash  #####
 @main.route("/")
 def splash():
-    return render_template("splash.html", title="JBTR RSVP")
+    return render_template("main/splash.html", title="JBTR RSVP")
 
 
 #####  RSVP  #####
@@ -40,7 +40,7 @@ def rsvp():
 
         db.session.commit()
 
-    return render_template("rsvp.html", title="RSVP", form=form, products=products)
+    return render_template("main/rsvp.html", title="RSVP", form=form, products=products)
 
 
 #####  Login  #####
@@ -57,7 +57,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for("admins.panel"))
         else:
             flash("Login unsuccessful.  Please check email and password!", "danger")
-    return render_template("login.html", title="Login", form=form)
+    return render_template("main/login.html", title="Login", form=form)
 
 
 #####  Logout  ######
@@ -71,10 +71,10 @@ def logout():
 #####  Generic  #####
 @main.route("/generic")
 def generic():
-    return render_template("generic.html", title="*GENERIC*")
+    return render_template("main/generic.html", title="*GENERIC*")
 
 
 #####  Elements  #####
 @main.route("/elements")
 def elements():
-    return render_template("elements.html", title="*ELEMENTS*")
+    return render_template("main/elements.html", title="*ELEMENTS*")

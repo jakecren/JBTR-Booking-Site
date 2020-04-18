@@ -4,11 +4,11 @@ from bookingApp import db, bcrypt
 from bookingApp.vendors.forms import *
 from bookingApp.models import Users, Vendors, Products
 
-vendors = Blueprint("vendors", __name__)
+vendors = Blueprint("vendors", __name__, template_folder='templates')
 
 
-@vendors.route("/vendorPanel")
+@vendors.route("/panel")
 @login_required
 def panel():
     vendors = Vendors.query.all()
-    return render_template("admin.html", title="Admin", vendors=vendors)
+    return render_template("vendors/admin.html", title="Admin", vendors=vendors)
