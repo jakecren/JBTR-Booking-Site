@@ -22,7 +22,7 @@ class RegisterVendorForm(FlaskForm):
     submit = SubmitField("Register")
 
     # Validate unique fields
-    def validate_mobile(self, email):
+    def validate_email(self, email):
         user = Users.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError("Email is unavailable, please choose a different email.")

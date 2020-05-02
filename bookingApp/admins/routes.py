@@ -7,7 +7,6 @@ from bookingApp.models import Users, Vendors, Products
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
 
-
 #####  Panel  ######
 @admins.route("/panel")
 @login_required
