@@ -4,15 +4,14 @@ from bookingApp import db, bcrypt
 from bookingApp.admins.forms import *
 from bookingApp.models import Users, Vendors, Products
 
-admins = Blueprint("admins", __name__)
+admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
 
 #####  Panel  ######
-@admins.route("/adminPanel")
+@admins.route("/panel")
 @login_required
 def panel():
-    vendors = Vendors.query.all()
-    return render_template("admin.html", title="Admin", vendors=vendors)
+    return render_template("admins/index.html", title="Admin")
 
 
 #####  Vendor Product View  #####
@@ -21,7 +20,7 @@ def panel():
 def vendorProductView(id):
     vendor = Vendors.query.filter_by(id=id).first_or_404()
     products = Products.query.filter_by(vendorID=id)
-    return render_template("vendorProductView.html", title="Vendor Product View", vendor=vendor, products=products)
+    return render_template("tempAdmins/vendorProductView.html", title="Vendor Product View", vendor=vendor, products=products)
 
 
 #####  Register Vendor  #####
@@ -45,11 +44,11 @@ def registerVendor():
 
         flash("Vendor Registered", "success")
         return redirect(url_for("users.admin"))
-    return render_template("registerVendor.html", title="Register Vendor", form=form)
+    return render_template("tempAdmins/registerVendor.html", title="Register Vendor", form=form)
 
 
 #####  Add Vendor Product  #####
-@admins.route("/addproduct/<int:id>", methods=["GET", "POST"])
+@admins.route("/addVProduct/<int:id>", methods=["GET", "POST"])
 @login_required
 def addProduct(id):
     form = AddProductForm()
@@ -59,4 +58,4 @@ def addProduct(id):
         db.session.commit()
         flash("Product Added", "success")
         return redirect(url_for("users.admin"))
-    return render_template("addProduct.html", title="Add Product", form=form)
+    return render_template("tempAdmins/addProduct.html", title="Add Product", form=form)
