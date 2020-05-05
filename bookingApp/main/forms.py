@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, BooleanField, IntegerField
+from wtforms import StringField, SubmitField, BooleanField, IntegerField, PasswordField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_login import current_user
 from bookingApp.models import Customers, Products
@@ -18,3 +18,10 @@ class rsvpForm(FlaskForm):
 
     # Submit
     submit = SubmitField("Submit")
+
+
+class LoginForm(FlaskForm):
+    email = StringField("Email:", validators=[DataRequired(), Email()])
+    password = PasswordField("Password:", validators=[DataRequired()])
+    remember = BooleanField("Remember Me:")
+    submit = SubmitField("Log In")
