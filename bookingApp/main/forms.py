@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from flask_login import current_user
 from bookingApp.models import Customers, Products
 
-class rsvpForm(FlaskForm):
+class rsvpForm_1(FlaskForm):
     # Customer Details
     forename = StringField("Forename:", validators=[DataRequired()])
     surname = StringField("Surname:", validators=[DataRequired()])
@@ -16,6 +16,16 @@ class rsvpForm(FlaskForm):
     state = StringField("State:", validators=[DataRequired()])
     postcode = StringField("Postcode", validators=[DataRequired(), Length(4, 4)])
 
+    # Submit
+    submit = SubmitField("Submit")
+
+
+class rsvpForm_2(FlaskForm):
+    # Submit
+    submit = SubmitField("Submit")
+
+
+class rsvpForm_3(FlaskForm):
     # Submit
     submit = SubmitField("Submit")
 
