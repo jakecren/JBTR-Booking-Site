@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% from '_helpers.html' import render_field %}
+
+<!-- Main -->
+<div id="main">
+
+	<!-- One -->
+	<section class="wrapper style1">
+		<div class="inner">
+			<header class="align-center">
+				<h2>RSVP</h2>
+				<p>If you would like to RSVP your attendance and have not already done so, please follow the steps below
+				</p>
+			</header>
+		</div>
+
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<!-- Customer Details Form Page -->
+			<div class="inner box" style="width: 60%;">
+				<div class="row uniform">
+					<h3>Overview</h3>
+
+					<!-- Submit Button -->
+					<div class="12u$">
+						{{ form.submit(class="button special") }}
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</section>
+</div>
+
+{% endblock content %}
