@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% from '_helpers.html' import render_field %}
+
+<!-- Main -->
+<div id="main">
+
+	<!-- One -->
+	<section class="wrapper style1">
+		<div class="inner">
+			<header class="align-center">
+				<h2>RSVP</h2>
+				<p>If you would like to RSVP your attendance and have not already done so, please follow the steps below
+				</p>
+			</header>
+		</div>
+
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<!-- Customer Details Form Page -->
+			<div class="inner box" style="width: 60%;">
+				<div class="row uniform">
+					<h3>Ticket & Food Selection</h3>
+					<!-- Tickets -->
+					<div style="width: 100%;">
+						<h3>Options:</h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Product</th>
+									<th>Description</th>
+									<th>Price</th>
+									<th>Quantity</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for product in products %}
+								<tr>
+									<td>{{ product.name }}</td>
+									<td>{{ product.description }}</td>
+									<td>${{ product.price }}</td>
+									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<div></div>
+
+					<!-- Submit Button -->
+					<div class="12u$">
+						{{ form.submit(class="button special") }}
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</section>
+</div>
+
+{% endblock content %}
