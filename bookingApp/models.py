@@ -68,7 +68,7 @@ class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False, unique=True)
     description = db.Column(db.String(255))
-    vendorID = db.Column(db.Integer, db.ForeignKey("vendors.id"), nullable=False)
+    vendorID = db.Column(db.Integer, db.ForeignKey("vendors.id"), nullable=True)
     price = db.Column(db.Float, nullable = False)
 
     orders = db.relationship("Orders")

@@ -17,12 +17,12 @@ class rsvpForm_1(FlaskForm):
     postcode = StringField("Postcode", validators=[DataRequired(), Length(4, 4)])
 
     # Submit
-    submit = SubmitField("Submit")
+    submit = SubmitField("Continue")
 
 
 class rsvpForm_2(FlaskForm):
     # Submit
-    submit = SubmitField("Submit")
+    submit = SubmitField("Continue")
 
 
 class rsvpForm_3(FlaskForm):

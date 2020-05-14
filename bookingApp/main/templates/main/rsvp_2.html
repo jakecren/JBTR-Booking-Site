@@ -20,10 +20,11 @@
 			<!-- Customer Details Form Page -->
 			<div class="inner box" style="width: 60%;">
 				<div class="row uniform">
-					<h3>Ticket & Food Selection</h3>
+					<h2>Ticket & Food Selection</h2>
 					<!-- Tickets -->
 					<div style="width: 100%;">
-						<h3>Options:</h3>
+
+						<h4>Tickets:</h4>
 						<table>
 							<thead>
 								<tr>
@@ -35,12 +36,38 @@
 							</thead>
 							<tbody>
 								{% for product in products %}
+								{% if product.name|first == '!' %}
+								<tr>
+									<td>{{ product.name[1:] }}</td>
+									<td>{{ product.description }}</td>
+									<td>${{ product.price }}</td>
+									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+								</tr>
+								{% endif %}
+								{% endfor %}
+							</tbody>
+						</table>
+
+						<h4>Catering:</h4>
+						<table>
+							<thead>
+								<tr>
+									<th>Product</th>
+									<th>Description</th>
+									<th>Price</th>
+									<th>Quantity</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for product in products %}
+								{% if product.name|first != '!' %}
 								<tr>
 									<td>{{ product.name }}</td>
 									<td>{{ product.description }}</td>
 									<td>${{ product.price }}</td>
 									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
 								</tr>
+								{% endif %}
 								{% endfor %}
 							</tbody>
 						</table>
