@@ -31,6 +31,20 @@
 						transition: 0.4s;
 					}
 
+					.accordion:after {
+						/* Unicode character for "plus" sign (+) */
+						content: '\002B';
+						color: #ffff;
+						font-size: 20px;
+						float: right;
+						margin-left: 5px;
+					}
+
+					.active:after {
+						/* Unicode character for "minus" sign (-) */
+						content: "\2212";
+					}
+
 					.panel {
 						max-height: 0;
 						overflow: hidden;
