@@ -19,12 +19,10 @@
 			{{ form.hidden_tag() }}
 			<!-- Customer Details Form Page -->
 			<div class="inner box" style="width: 60%;">
+				<h3>User Details</h3>
+				<h4>Name:</h4>
 				<div class="row uniform">
-					<h3>User Details</h3>
-
-					<!-- Forename -->
-					<div class="12u$ 12u$(small)">
-						<label for="forename" style="font-size: medium;">Forename:</label>
+					<div class="6u 12u$(xsmall)">
 						{% if form.forename.errors %}
 						{{ form.forename(class="form-control form-control-lg is-invalid") }}
 						<div class="invalid-feedback">
@@ -33,13 +31,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.forename(placeholder="Enter forename") }}
+						{{ form.forename(placeholder="Enter firstname", value=customer[0]) }}
 						{% endif %}
 					</div>
 
 					<!-- Surname -->
-					<div class="12u$ 12u$(small)">
-						<label for="surname" style="font-size: medium;">Surname:</label>
+					<div class="6u$ 12u$(xsmall)">
 						{% if form.surname.errors %}
 						{{ form.surname(class="form-control form-control-lg is-invalid") }}
 						<div class="invalid-feedback">
@@ -48,12 +45,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.surname(placeholder="Enter surname") }}
+						{{ form.surname(placeholder="Enter surname", value=customer[1]) }}
 						{% endif %}
 					</div>
 
 					<!-- Email -->
-					<div class="12u$ 12u$(small)">
+					<div class="6u 12u$(xsmall)">
 						<label for="email" style="font-size: medium;">Email:</label>
 						{% if form.email.errors %}
 						{{ form.email(class="form-control form-control-lg is-invalid") }}
@@ -63,12 +60,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.email(placeholder="Enter Email") }}
+						{{ form.email(placeholder="Enter Email", value=customer[2]) }}
 						{% endif %}
 					</div>
 
 					<!-- Mobile -->
-					<div class="12u$ 12u$(small)">
+					<div class="6u$ 12u$(xsmall)">
 						<label for="mobile" style="font-size: medium;">Mobile:</label>
 						{% if form.mobile.errors %}
 						{{ form.mobile(class="form-control form-control-lg is-invalid") }}
@@ -78,12 +75,16 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.mobile(placeholder="Enter mobile") }}
+						{{ form.mobile(placeholder="Enter mobile", value=customer[3]) }}
 						{% endif %}
 					</div>
+					<div class="12u$"></div>
+				</div>
 
+				<h4>Address:</h4>
+				<div class="row uniform">
 					<!-- Street -->
-					<div class="12u$ 12u$(small)">
+					<div class="6u 12u$(xsmall)">
 						<label for="street" style="font-size: medium;">Street:</label>
 						{% if form.street.errors %}
 						{{ form.street(class="form-control form-control-lg is-invalid") }}
@@ -93,12 +94,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.street(placeholder="Enter street") }}
+						{{ form.street(placeholder="Enter street", value=customer[4]) }}
 						{% endif %}
 					</div>
 
 					<!-- Suburb -->
-					<div class="12u$ 12u$(small)">
+					<div class="6u$ 12u$(xsmall)">
 						<label for="suburb" style="font-size: medium;">Suburb:</label>
 						{% if form.suburb.errors %}
 						{{ form.suburb(class="form-control form-control-lg is-invalid") }}
@@ -108,12 +109,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.suburb(placeholder="Enter suburb") }}
+						{{ form.suburb(placeholder="Enter suburb", value=customer[5]) }}
 						{% endif %}
 					</div>
 
 					<!-- City -->
-					<div class="12u$ 12u$(small)">
+					<div class="4u 12u$(xsmall)">
 						<label for="city" style="font-size: medium;">City:</label>
 						{% if form.city.errors %}
 						{{ form.city(class="form-control form-control-lg is-invalid") }}
@@ -123,12 +124,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.city(placeholder="Enter city") }}
+						{{ form.city(placeholder="Enter city", value=customer[6]) }}
 						{% endif %}
 					</div>
 
 					<!-- State -->
-					<div class="12u$ 12u$(small)">
+					<div class="4u 12u$(xsmall)">
 						<label for="state" style="font-size: medium;">State:</label>
 						{% if form.state.errors %}
 						{{ form.state(class="form-control form-control-lg is-invalid") }}
@@ -138,12 +139,12 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.state(placeholder="Enter state") }}
+						{{ form.state(class="select-wrapper") }}
 						{% endif %}
 					</div>
 
 					<!-- Postcode -->
-					<div class="12u$ 12u$(small)">
+					<div class="4u$ 12u$(xsmall)">
 						<label for="postcode" style="font-size: medium;">Postcode:</label>
 						{% if form.postcode.errors %}
 						{{ form.postcode(class="form-control form-control-lg is-invalid") }}
@@ -153,7 +154,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.postcode(placeholder="Enter postcode") }}
+						{{ form.postcode(placeholder="Enter postcode", value=customer[8]) }}
 						{% endif %}
 					</div>
 

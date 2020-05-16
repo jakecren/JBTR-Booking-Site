@@ -17,26 +17,40 @@ def splash():
 #####  RSVP - Page 1  #####
 @main.route("/rsvp", methods=["GET", "POST"])
 def rsvp():
-    form = rsvpForm_1()
+    customer = session.get('customer')
+    if session.get('customer') != None:
+        form = rsvpForm_1(state=customer[7])
+    else:
+        form = rsvpForm_1()
     
-    if form.validate_on_submit():        
+    if form.validate_on_submit():
+        if form.state.data == "":
+            form.state.errors.append("Please select state.")     
         Email = str(form.email.data).lower()
         customer = [form.forename.data, form.surname.data, Email, form.mobile.data, form.street.data, form.suburb.data, form.city.data, form.state.data, form.postcode.data]
         session['customer'] = customer
         session.modified = True
-
+        
         return redirect(url_for('main.rsvp_2'))
-
-    return render_template("main/rsvp_1.html", title="RSVP", form=form)
+    return render_template("main/rsvp_1.html", title="RSVP", form=form, customer=customer)
 
 
 #####  RSVP - Page 2  #####
 @main.route("/rsvp/2", methods=["GET", "POST"])
 def rsvp_2():
+    if session.get('customer') == None:
+        return redirect(url_for('main.rsvp'))
+    
     products = Products.query.all()
     for product in products:
         setattr(rsvpForm_2, product.name, IntegerField(product.name))
     form = rsvpForm_2()
+
+    customerOrders = []
+    orderedProducts = session.get('orderedProducts')
+    if session.get('orderedProducts') != None:
+        for product in orderedProducts:
+            exec(f"customerOrders.append(session.get('{product}'))")
     
     if form.validate_on_submit():
         orderedProducts = []
@@ -49,18 +63,30 @@ def rsvp_2():
         session.modified = True
 
         return redirect(url_for('main.rsvp_3'))
-
-    return render_template("main/rsvp_2.html", title="RSVP", form=form, products=products)
+    
+    if session.get('orderedProducts') != None:
+        return render_template("main/rsvp_2.html", title="RSVP", form=form, products=products, customerOrders=customerOrders)
+        print("Customer Orders!")
+    else:
+        return render_template("main/rsvp_2.html", title="RSVP", form=form, products=products)
 
 
 #####  RSVP - Page 3  #####
 @main.route("/rsvp/3", methods=["GET", "POST"])
 def rsvp_3():
+    if session.get('orderedProducts') == None:
+        return redirect(url_for('main.rsvp_2'))
+
     products = Products.query.all()
     form = rsvpForm_3()
+    customer = session.get('customer')
+
+    customerOrders = []
+    orderedProducts = session.get('orderedProducts')
+    for product in orderedProducts:
+        exec(f"customerOrders.append(session.get('{product}'))")
     
     if form.validate_on_submit():
-        customer = session.get('customer')
         Customer = Customers(forename=customer[0], surname=customer[1], email=customer[2], mobile=customer[3], street=customer[4], suburb=customer[5], city=customer[6], state=customer[7], postcode=customer[8])
         db.session.add(Customer)
         db.session.flush()
@@ -73,12 +99,11 @@ def rsvp_3():
             if product.name in session.get('orderedProducts'):
                 exec(f"""order = Orders(referenceNumber=refNo.referenceNo, productID=session.get('{product.name}')[0], quantity=session.get('{product.name}')[1])
 db.session.add(order)""")
-        
         db.session.commit()
-        
-        return redirect(url_for('main.splash'))
+        session.clear()
 
-    return render_template("main/rsvp_3.html", title="RSVP", form=form, products=products)
+        return redirect(url_for('main.splash'))
+    return render_template("main/rsvp_3.html", title="RSVP", form=form, products=products, customer=customer, customerOrders=customerOrders)
 
 
 #####  Login  #####
@@ -109,6 +134,7 @@ def logout():
 #####  Generic  #####
 @main.route("/generic")
 def generic():
+    session.clear()
     return render_template("main/generic.html", title="*GENERIC*")
 
 
