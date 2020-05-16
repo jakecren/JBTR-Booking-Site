@@ -15,21 +15,280 @@
 			</header>
 		</div>
 
-		<form method="POST" action="">
-			{{ form.hidden_tag() }}
-			<!-- Customer Details Form Page -->
-			<div class="inner box" style="width: 60%;">
-				<div class="row uniform">
-					<h3>Overview</h3>
+		<!-- Customer Details Form Page -->
+		<div class="inner box" style="width: 60%;">
+			<div class="row uniform">
+				<h3>Overview</h3>
 
+				<style>
+					.accordion {
+						cursor: pointer;
+						width: 100%;
+						border: none;
+						text-align: left;
+						outline: none;
+						font-size: 15px;
+						transition: 0.4s;
+					}
+
+					.accordion:after {
+						/* Unicode character for "plus" sign (+) */
+						content: '\002B';
+						color: #ffff;
+						font-size: 20px;
+						float: right;
+						margin-left: 5px;
+					}
+
+					.active:after {
+						/* Unicode character for "minus" sign (-) */
+						content: "\2212";
+					}
+
+					.panel {
+						max-height: 0;
+						overflow: hidden;
+						transition: max-height 0.2s ease-out;
+					}
+				</style>
+
+				<div class="12u$ 12u$(small)">
+					<button class="accordion alt">Personal Details</button>
+					<div class="panel">
+						<div class="box">
+							<h3>User Details</h3>
+							<h4>Name:</h4>
+							<div class="row uniform">
+								<div class="6u 12u$(xsmall)">
+									<input type="text" value="{{ customer[0] }}" disabled>
+								</div>
+
+								<!-- Surname -->
+								<div class="6u$ 12u$(xsmall)">
+									<input type="text" value="{{ customer[1] }}" disabled>
+								</div>
+
+								<!-- Email -->
+								<div class="6u 12u$(xsmall)">
+									<label for="email" style="font-size: medium;">Email:</label>
+									<input type="text" value="{{ customer[2] }}" disabled>
+								</div>
+
+								<!-- Mobile -->
+								<div class="6u$ 12u$(xsmall)">
+									<label for="mobile" style="font-size: medium;">Mobile:</label>
+									<input type="text" value="{{ customer[3] }}" disabled>
+								</div>
+								<div class="12u$"></div>
+							</div>
+
+							<h4>Address:</h4>
+							<div class="row uniform">
+								<!-- Street -->
+								<div class="6u 12u$(xsmall)">
+									<label for="street" style="font-size: medium;">Street:</label>
+									<input type="text" value="{{ customer[4] }}" disabled>
+								</div>
+
+								<!-- Suburb -->
+								<div class="6u$ 12u$(xsmall)">
+									<label for="suburb" style="font-size: medium;">Suburb:</label>
+									<input type="text" value="{{ customer[5] }}" disabled>
+								</div>
+
+								<!-- City -->
+								<div class="4u 12u$(xsmall)">
+									<label for="city" style="font-size: medium;">City:</label>
+									<input type="text" value="{{ customer[6] }}" disabled>
+								</div>
+
+								<!-- State -->
+								<div class="4u 12u$(xsmall)">
+									<label for="state" style="font-size: medium;">State:</label>
+									<input type="text" value="{{ customer[7] }}" disabled>
+								</div>
+
+								<!-- Postcode -->
+								<div class="4u$ 12u$(xsmall)">
+									<label for="postcode" style="font-size: medium;">Postcode:</label>
+									<input type="text" value="{{ customer[8] }}" disabled>
+								</div>
+								<div class="12u$"></div>
+							</div>
+							<a class="button" href="{{ url_for('main.rsvp') }}">Edit Personal Details</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="12u$ 12u$(small)">
+					<button class="accordion alt">Ticket Selections</button>
+					<div class="panel">
+						<div class="box">
+							<h4>Tickets:</h4>
+							<table>
+								<thead>
+									<tr>
+										<th>Product</th>
+										<th>Description</th>
+										<th>Price</th>
+										<th>Quantity</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% set tickets = namespace(quantity=0, totalPrice=0.00) %}
+									{% for order in customerOrders %}
+									{% for product in products %}
+									{% if product.id == order[0] %}
+									{% if product.name[:2] == 't_' %}
+									<tr>
+										<td>{{ product.name[2:]|replace('_', ' ') }}</td>
+										<td>{{ product.description }}</td>
+										<td>${{ product.price }}</td>
+										<td>{{ order[1] }}</td>
+
+										{% set tickets.totalPrice = tickets.totalPrice + (product.price * order[1]) %}
+										{% set tickets.quantity = tickets.quantity + order[1] %}
+									</tr>
+									{% endif %}
+									{% endif %}
+									{% endfor %}
+									{% endfor %}
+
+									<tr style="font-size: medium;">
+										<th></th>
+										<th></th>
+										<th style="padding-top: 22px;"><u>Total Price</u></th>
+										<th><u>Total Quantity</u></th>
+									</tr>
+									<tr style="font-size: medium;">
+										<td></td>
+										<td></td>
+										<td>${{ tickets.totalPrice }}</td>
+
+										<td>{{ tickets.quantity }}</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<a class="button" href="{{ url_for('main.rsvp_2') }}">Edit Ticket Selections</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="12u$ 12u$(small)">
+					<button class="accordion alt">Catering Selections</button>
+					<div class="panel">
+						<div class="box">
+							<h4>Catering:</h4>
+							<table>
+								<thead>
+									<tr>
+										<th>Product</th>
+										<th>Description</th>
+										<th>Price</th>
+										<th>Quantity</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% set catering = namespace(quantity=0, totalPrice=0.00) %}
+									{% for order in customerOrders %}
+									{% for product in products %}
+									{% if product.id == order[0] %}
+									{% if product.name[:2] != 't_' %}
+									<tr>
+										<td>{{ product.name|replace('_', ' ') }}, {{ order[1] }}</td>
+										<td>{{ product.description }}</td>
+										<td>${{ product.price }}</td>
+										<td>{{ order[1] }}</td>
+
+										{% set catering.totalPrice = catering.totalPrice + (product.price * order[1]) %}
+										{% set catering.quantity = catering.quantity + order[1] %}
+									</tr>
+									{% endif %}
+									{% endif %}
+									{% endfor %}
+									{% endfor %}
+
+									<tr style="font-size: medium;">
+										<th></th>
+										<th></th>
+										<th style="padding-top: 22px;"><u>Total Price</u></th>
+										<th><u>Total Quantity</u></th>
+									</tr>
+									<tr style="font-size: medium;">
+										<td></td>
+										<td></td>
+										<td>${{ catering.totalPrice }}</td>
+
+										<td>{{ catering.quantity }}</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<a class="button" href="{{ url_for('main.rsvp_2') }}">Edit Catering Selections</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="12u$">
+					<h4>Totals:</h4>
+					<table class="alt">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Quantity</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Tickets</td>
+								<td>{{ tickets.quantity }}</td>
+								<td>${{ tickets.totalPrice }}</td>
+							</tr>
+							<tr>
+								<td>Catering</td>
+								<td>{{ catering.quantity }}</td>
+								<td>${{ catering.totalPrice }}</td>
+							</tr>
+
+						</tbody>
+						<tfoot>
+							<tr style="font-size: medium; font-weight: bold;">
+								<td></td>
+								<td>Total Price:</td>
+								<td>${{ catering.totalPrice + tickets.totalPrice }}</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+
+				<script>
+					var acc = document.getElementsByClassName("accordion");
+					var i;
+
+					for (i = 0; i < acc.length; i++) {
+						acc[i].addEventListener("click", function () {
+							this.classList.toggle("active");
+							var panel = this.nextElementSibling;
+							if (panel.style.maxHeight) {
+								panel.style.maxHeight = null;
+							} else {
+								panel.style.maxHeight = panel.scrollHeight + "px";
+							}
+						});
+					}
+				</script>
+
+				<form method="POST" action="">
+					{{ form.hidden_tag() }}
 					<!-- Submit Button -->
 					<div class="12u$">
 						{{ form.submit(class="button special") }}
 					</div>
-
-				</div>
+				</form>
 			</div>
-		</form>
+		</div>
 	</section>
 </div>
 
