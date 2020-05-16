@@ -36,12 +36,23 @@
 							</thead>
 							<tbody>
 								{% for product in products %}
-								{% if product.name|first == '!' %}
+								{% if product.name[:2] == 't_' %}
 								<tr>
-									<td>{{ product.name[1:] }}</td>
+									<td>{{ product.name[2:]|replace('_', ' ') }}</td>
 									<td>{{ product.description }}</td>
 									<td>${{ product.price }}</td>
+									{% if customerOrders is not defined %}
 									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% else %}
+									{% for order in customerOrders %}
+									{% if order[0] == product.id %}
+									<td>{{ render_field(form[product.name], type="number", value=order[1], min=0) }}
+									</td>
+									{% else %}
+									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% endif %}
+									{% endfor %}
+									{% endif %}
 								</tr>
 								{% endif %}
 								{% endfor %}
@@ -60,12 +71,23 @@
 							</thead>
 							<tbody>
 								{% for product in products %}
-								{% if product.name|first != '!' %}
+								{% if product.name[:2] != 't_' %}
 								<tr>
-									<td>{{ product.name }}</td>
+									<td>{{ product.name|replace('_', ' ') }}</td>
 									<td>{{ product.description }}</td>
 									<td>${{ product.price }}</td>
+									{% if customerOrders is not defined %}
 									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% else %}
+									{% for order in customerOrders %}
+									{% if order[0] == product.id %}
+									<td>{{ render_field(form[product.name], type="number", value=order[1], min=0) }}
+									</td>
+									{% else %}
+									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% endif %}
+									{% endfor %}
+									{% endif %}
 								</tr>
 								{% endif %}
 								{% endfor %}
