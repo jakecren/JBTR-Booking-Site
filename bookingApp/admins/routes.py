@@ -18,6 +18,25 @@ def panel():
     return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors)
 
 
+####  Vendor List  ####
+@admins.route("/vendorList")
+@login_required
+def vendorList():
+    vendors = Vendors.query.all()
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors)
+
+
+####  Atendee List  ####
+@admins.route("/atendeeList")
+@login_required
+def atendeeList():
+    atendees = Customers.query.all()
+    refNo = ReferenceNumbers.query.all()
+    orders = Orders.query.all()
+    products = Products.query.all()
+    return render_template("admins/atendeeList.html", title="Atendee List", atendees=atendees, refNo=refNo, orders=orders, products=products)
+
+
 #####  Vendor Product View  #####
 @admins.route("/VPView/<int:id>")
 @login_required

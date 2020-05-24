@@ -196,7 +196,7 @@
 									{% if product.id == order[0] %}
 									{% if product.name[:2] != 't_' %}
 									<tr>
-										<td>{{ product.name|replace('_', ' ') }}, {{ order[1] }}</td>
+										<td>{{ product.name|replace('_', ' ') }}</td>
 										<td>{{ product.description }}</td>
 										<td>${{ product.price }}</td>
 										<td>{{ order[1] }}</td>

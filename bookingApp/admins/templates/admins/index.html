@@ -74,7 +74,7 @@
                                     <i class="zmdi zmdi-money"></i>
                                 </div>
                                 <div class="text">
-                                    <h2>${{ cateringNS.earnings + ticketNS.earnings }}</h2>
+                                    <h2>${{ (cateringNS.earnings + ticketNS.earnings)|round(2) }}</h2>
                                     <span>Total Estimated Earnings</span>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@
                                             {% endif %}
                                             {% endfor %}
                                             {% endfor %}
-                                            <td class="text-right">${{ vendorNS.earnings }}</td>
+                                            <td class="text-right">${{ vendorNS.earnings|round(2) }}</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
