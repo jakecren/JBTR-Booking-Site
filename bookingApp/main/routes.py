@@ -1,6 +1,6 @@
 from flask import render_template, request, Blueprint, redirect, url_for, flash, session
 from bookingApp.main.forms import *
-from bookingApp import db
+from bookingApp import db, Mail, SGmail
 from bookingApp.models import *
 from wtforms import IntegerField
 from flask_login import login_user, logout_user, current_user, login_required
@@ -66,7 +66,6 @@ def rsvp_2():
     
     if session.get('orderedProducts') != None:
         return render_template("main/rsvp_2.html", title="RSVP", form=form, products=products, customerOrders=customerOrders)
-        print("Customer Orders!")
     else:
         return render_template("main/rsvp_2.html", title="RSVP", form=form, products=products)
 
@@ -102,6 +101,42 @@ db.session.add(order)""")
         db.session.commit()
         session.clear()
 
+        message = Mail(
+            from_email='donotreply@atcjbtrrsvp.com',
+            to_emails=customer[2],
+            subject='RSVP Successful')
+        message.template_id = "d-25f51cfbf3ca459585aa2a61ff4feb82"
+        with open('bookingApp/main/templates/main/emails/receipt.html', 'r') as f:
+            content = f.read()
+    
+        orders = Orders.query.all()
+        total = 0.00
+        contentStr = ""
+        for order in orders:
+            for product in products:
+                if order.referenceNumber == Customer.id:
+                    if product.id == order.productID:
+                        total += (order.quantity * product.price)
+                        if product.name[:2] == "t_":
+                            productName = product.name[2:]
+                        else:
+                            productName = product.name
+                        contentStr += f"""
+                        <tr>
+                            <td>{productName.replace("_", " ")}</td>
+                            <td>{order.quantity}</td>
+                            <td>${product.price}</td>
+                            <td>${round((product.price * order.quantity), 2)}</td>
+                        </tr>
+                        """
+
+        message.dynamic_template_data = {
+            'content': content.format(tbody=contentStr, total=round(total, 2)),
+            'name': (customer[0] + " " + customer[1])
+            }
+        SGmail.send(message)
+
+        flash("RSVP Successful!  Please check your email for a copy of the order.")
         return redirect(url_for('main.splash'))
     return render_template("main/rsvp_3.html", title="RSVP", form=form, products=products, customer=customer, customerOrders=customerOrders)
 

@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint,
 from flask_login import login_user, current_user, logout_user, login_required
 from bookingApp import db, bcrypt
 from bookingApp.admins.forms import *
-from bookingApp.models import Users, Vendors, Products
+from bookingApp.models import *
 
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
@@ -11,7 +11,30 @@ admins = Blueprint("admins", __name__, template_folder='templates', static_folde
 @admins.route("/panel")
 @login_required
 def panel():
-    return render_template("admins/index.html", title="Admin")
+    products = Products.query.all()
+    orders = Orders.query.all()
+    users = Users.query.all()
+    vendors = Vendors.query.all()
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors)
+
+
+####  Vendor List  ####
+@admins.route("/vendorList")
+@login_required
+def vendorList():
+    vendors = Vendors.query.all()
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors)
+
+
+####  Atendee List  ####
+@admins.route("/atendeeList")
+@login_required
+def atendeeList():
+    atendees = Customers.query.all()
+    refNo = ReferenceNumbers.query.all()
+    orders = Orders.query.all()
+    products = Products.query.all()
+    return render_template("admins/atendeeList.html", title="Atendee List", atendees=atendees, refNo=refNo, orders=orders, products=products)
 
 
 #####  Vendor Product View  #####

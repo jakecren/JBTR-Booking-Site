@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from bookingApp.config import Config
 
 db = SQLAlchemy()
@@ -10,6 +11,8 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = "users.login"
 login_manager.login_message_category = "info"
+
+SGmail = SendGridAPIClient(Config.SENDGRID_API_KEY)
 
 def splitChars(string):
     return [st for st in string]

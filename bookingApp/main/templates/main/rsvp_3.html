@@ -196,7 +196,7 @@
 									{% if product.id == order[0] %}
 									{% if product.name[:2] != 't_' %}
 									<tr>
-										<td>{{ product.name|replace('_', ' ') }}, {{ order[1] }}</td>
+										<td>{{ product.name|replace('_', ' ') }}</td>
 										<td>{{ product.description }}</td>
 										<td>${{ product.price }}</td>
 										<td>{{ order[1] }}</td>
@@ -218,9 +218,9 @@
 									<tr style="font-size: medium;">
 										<td></td>
 										<td></td>
-										<td>${{ catering.totalPrice }}</td>
+										<td>${{ catering.totalPrice|round(2) }}</td>
 
-										<td>{{ catering.quantity }}</td>
+										<td>{{ catering.quantity|round(2) }}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -244,12 +244,12 @@
 							<tr>
 								<td>Tickets</td>
 								<td>{{ tickets.quantity }}</td>
-								<td>${{ tickets.totalPrice }}</td>
+								<td>${{ tickets.totalPrice|round(2) }}</td>
 							</tr>
 							<tr>
 								<td>Catering</td>
 								<td>{{ catering.quantity }}</td>
-								<td>${{ catering.totalPrice }}</td>
+								<td>${{ catering.totalPrice|round(2) }}</td>
 							</tr>
 
 						</tbody>
@@ -257,7 +257,7 @@
 							<tr style="font-size: medium; font-weight: bold;">
 								<td></td>
 								<td>Total Price:</td>
-								<td>${{ catering.totalPrice + tickets.totalPrice }}</td>
+								<td>${{ (catering.totalPrice + tickets.totalPrice)|round(2) }}</td>
 							</tr>
 						</tfoot>
 					</table>

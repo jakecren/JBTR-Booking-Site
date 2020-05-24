@@ -44,14 +44,17 @@
 									{% if customerOrders is not defined %}
 									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
 									{% else %}
+									{% set productInput = namespace(x=0) %}
 									{% for order in customerOrders %}
 									{% if order[0] == product.id %}
 									<td>{{ render_field(form[product.name], type="number", value=order[1], min=0) }}
 									</td>
-									{% else %}
-									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% set productInput.x = 1 %}
 									{% endif %}
 									{% endfor %}
+									{% if productInput.x == 0 %}
+									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% endif %}
 									{% endif %}
 								</tr>
 								{% endif %}
@@ -79,14 +82,17 @@
 									{% if customerOrders is not defined %}
 									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
 									{% else %}
+									{% set cateringInput = namespace(x=0) %}
 									{% for order in customerOrders %}
 									{% if order[0] == product.id %}
 									<td>{{ render_field(form[product.name], type="number", value=order[1], min=0) }}
 									</td>
-									{% else %}
-									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% set cateringInput.x = 1 %}
 									{% endif %}
 									{% endfor %}
+									{% if cateringInput.x == 0 %}
+									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>
+									{% endif %}
 									{% endif %}
 								</tr>
 								{% endif %}
