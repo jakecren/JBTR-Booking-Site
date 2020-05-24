@@ -22,6 +22,8 @@
 				<h3>User Details</h3>
 				<h4>Name:</h4>
 				<div class="row uniform">
+
+					<!-- Forename -->
 					<div class="6u 12u$(xsmall)">
 						{% if form.forename.errors %}
 						{{ form.forename(class="form-control form-control-lg is-invalid") }}
@@ -31,7 +33,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.forename(placeholder="Enter firstname", value=customer[0]) }}
+						{{ form.forename(placeholder="Enter firstname", value=customer[0], autocomplete="fname") }}
 						{% endif %}
 					</div>
 
@@ -45,7 +47,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.surname(placeholder="Enter surname", value=customer[1]) }}
+						{{ form.surname(placeholder="Enter surname", value=customer[1], autocomplete="lname") }}
 						{% endif %}
 					</div>
 
@@ -60,7 +62,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.email(placeholder="Enter Email", value=customer[2]) }}
+						{{ form.email(placeholder="Enter Email", value=customer[2], autocomplete="email") }}
 						{% endif %}
 					</div>
 
@@ -75,7 +77,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.mobile(placeholder="Enter mobile", value=customer[3]) }}
+						{{ form.mobile(placeholder="Enter mobile", value=customer[3], autocomplete="tel") }}
 						{% endif %}
 					</div>
 					<div class="12u$"></div>
@@ -94,7 +96,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.street(placeholder="Enter street", value=customer[4]) }}
+						{{ form.street(placeholder="Street Number & Name", value=customer[4], autocomplete="street-address") }}
 						{% endif %}
 					</div>
 
@@ -109,7 +111,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.suburb(placeholder="Enter suburb", value=customer[5]) }}
+						{{ form.suburb(placeholder="Enter suburb", value=customer[5], autocomplete="city") }}
 						{% endif %}
 					</div>
 
@@ -124,7 +126,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.city(placeholder="Enter city", value=customer[6]) }}
+						{{ form.city(placeholder="Enter city", value=customer[6], autocomplete="region") }}
 						{% endif %}
 					</div>
 
@@ -139,7 +141,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.state(class="select-wrapper") }}
+						{{ form.state(class="select-wrapper", autocomplete="state") }}
 						{% endif %}
 					</div>
 
@@ -154,7 +156,7 @@
 							{% endfor %}
 						</div>
 						{% else %}
-						{{ form.postcode(placeholder="Enter postcode", value=customer[8]) }}
+						{{ form.postcode(placeholder="Enter postcode", value=customer[8], autocomplete="postal-code") }}
 						{% endif %}
 					</div>
 
