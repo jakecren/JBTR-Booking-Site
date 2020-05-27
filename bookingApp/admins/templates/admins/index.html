@@ -13,7 +13,7 @@
             </div>
             <div class="row m-t-25">
                 <div class="col-sm-6 col-lg-3">
-                    <div class="overview-item overview-item--c1">
+                    <div class="overview-item overview-item--c4">
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
                                 <div class="icon">
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-3">
-                    <div class="overview-item overview-item--c2">
+                    <div class="overview-item overview-item--c4">
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
                                 <div class="icon">
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-3">
-                    <div class="overview-item overview-item--c3">
+                    <div class="overview-item overview-item--c4">
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
                                 <div class="icon">
@@ -130,13 +130,14 @@
                                     {% for vendor in vendors %}
                                     {% if vendor.id == product.vendorID %}
                                     <td class="text-right">{{ vendor.name }}</td>
-                                    {% else %}
-                                    <td class="text-right">ATC</td>
                                     {% endif %}
                                     {% endfor %}
+                                    {% if product.vendorID == None %}
+                                    <td class="text-right">ATC</td>
+                                    {% endif %}
 
                                     <td class="text-right">{{ productNS.quantity }}</td>
-                                    <td class="text-right">${{ productNS.earnings }}</td>
+                                    <td class="text-right">${{ productNS.earnings|round(2) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

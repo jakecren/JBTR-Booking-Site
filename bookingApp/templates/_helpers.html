@@ -1,8 +1,24 @@
 {% macro render_field(name) %}
 <div class="form-group">
     {% if kwargs['label'] == True %}
-        {{ name.label(style="font-size: mediuml;") }}
+    {{ name.label(style="font-size: mediuml;") }}
     {% endif %}
     {{ name(placeholder=kwargs['placeholder'], class=kwargs['class'], type=kwargs['type'], default=kwargs['default'], max=kwargs['max'], min=kwargs['min'], style=kwargs['style'], value=kwargs['value']) }}
+</div>
+{% endmacro %}
+
+{% macro formInput(name) %}
+<div class="form-group col-md-6">
+    {{ name.label() }}
+    {% if name.errors %}
+    {{ name(class="form-control is-invalid au-input au-input--full") }}
+    <div class="invalid-feedback">
+        {% for error in name.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ name(placeholder="Enter Forename", class="au-input au-input--full") }}
+    {% endif %}
 </div>
 {% endmacro %}

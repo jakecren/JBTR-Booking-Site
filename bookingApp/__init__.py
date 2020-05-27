@@ -29,12 +29,10 @@ def create_app(config_class=Config):
 
     from bookingApp.main.routes import main
     from bookingApp.admins.routes import admins
-    from bookingApp.vendors.routes import vendors
     from bookingApp.errors.handlers import errors
 
     app.register_blueprint(main)
     app.register_blueprint(admins, url_prefix='/admin')
-    app.register_blueprint(vendors, url_prefix='/vendor')
     app.register_blueprint(errors)
 
     return app
