@@ -43,6 +43,8 @@ def attendeeListDelete(customerID):
 @admins.route("/DC/<int:customerID>")
 @login_required
 def deleteCustomer(customerID):
+    if current_user.admin != 1:
+        abort(403)
     customerD = Customers.query.get_or_404(customerID)
     refNo = ReferenceNumbers.query.get_or_404(customerID)
     orders = Orders.query.all()
@@ -63,18 +65,59 @@ def deleteCustomer(customerID):
 @login_required
 def vendorList():
     vendors = Vendors.query.all()
-    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors)
+    vendorD = None
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=vendorD)
+
+
+#####  Vendor List - Delete Modal  #####
+@admins.route("/vendorList/<int:vendorID>")
+@login_required
+def vendorListDelete(vendorID):
+    vendors = Vendors.query.all()
+    vendorD = Vendors.query.get_or_404(vendorID)
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=vendorD)
+
+
+####  Delete Vendor  ####
+@admins.route("/vendorList/DV/<int:vendorID>")
+@login_required
+def deleteVendor(vendorID):
+    if current_user.admin != 1:
+        abort(403)
+    vendorD = Vendors.query.get_or_404(vendorID)
+    orders = Orders.query.all()
+    products = Products.query.all()
+    users = Users.query.all()
+    
+    for order in orders:
+        for product in products:
+            if product.vendorID == vendorD.id:
+                if order.productID == product.id:
+                    db.session.delete(order)
+    
+    for product in products:
+        if product.vendorID == vendorD.id:
+            db.session.delete(product)
+    
+    db.session.delete(vendorD)
+
+    for user in users:
+        if user.id == vendorD.userID:
+            db.session.delete(user)
+
+    db.session.commit()
+    flash(f"Vendor: {vendorD.name} and Associated Products and Orders Deleted", "success")
+    return redirect(url_for("admins.vendorList"))
 
 
 #####  Register Vendor  #####
-@admins.route("/registerVendor", methods=["GET", "POST"])
+@admins.route("/vendorList/add", methods=["GET", "POST"])
 @login_required
 def registerVendor():
     if current_user.admin != 1:
         abort(403)
     form = RegisterVendorForm()
     if form.validate_on_submit():
-        print("hellooooo")
         hashedPassword = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         Email = str(form.email.data).lower()
 
@@ -91,20 +134,6 @@ def registerVendor():
     return render_template("admins/registerVendor.html", title="Register Vendor", form=form)
 
 
-#####  Add Vendor Product  #####
-@admins.route("/addVProduct/<int:id>", methods=["GET", "POST"])
-@login_required
-def addProduct(id):
-    form = AddProductForm()
-    if form.validate_on_submit():
-        product = Products(name=form.name.data, description=form.description.data, price=form.price.data, vendorID=id)
-        db.session.add(product)
-        db.session.commit()
-        flash("Product Added", "success")
-        return redirect(url_for("users.admin"))
-    return render_template("tempAdmins/addProduct.html", title="Add Product", form=form)
-
-
 #####  Vendor Product View  #####
 @admins.route("/VPView/<int:id>")
 @login_required
@@ -112,3 +141,69 @@ def vendorProductView(id):
     vendor = Vendors.query.filter_by(id=id).first_or_404()
     products = Products.query.filter_by(vendorID=id)
     return render_template("tempAdmins/vendorProductView.html", title="Vendor Product View", vendor=vendor, products=products)
+
+
+####  Product List  ####
+@admins.route("/productList")
+@login_required
+def productList():
+    products = Products.query.all()
+    productD = None
+    vendors = Vendors.query.all()
+    return render_template("admins/productList.html", title="Product List", products=products, productD=productD, vendors=vendors)
+
+
+#####  Product List - Delete Modal  #####
+@admins.route("/productList/<int:productID>")
+@login_required
+def productListDelete(productID):
+    products = Products.query.all()
+    productD = Products.query.get_or_404(productID)
+    vendors = Vendors.query.all()
+    return render_template("admins/productList.html", title="Product List", products=products, productD=productD, vendors=vendors)
+
+####  Delete Product  ####
+@admins.route("/productList/DP/<int:productID>")
+@login_required
+def deleteProduct(productID):
+    productD = Products.query.get_or_404(productID)
+    orders = Orders.query.all()
+    products = Products.query.all()
+    
+    for order in orders:
+        if order.productID == productD.id:
+            db.session.delete(order)
+    
+    db.session.delete(productD)
+
+    db.session.commit()
+    if productD.name[:2] == "t_":
+        productName = productD.name[2:].replace("_", " ")
+    else:
+        productName = productD.name.replace("_", " ")
+    flash(f"Product: {productName} and Associated Orders Deleted", "success")
+    return redirect(url_for("admins.productList"))
+
+
+####  Add Product  ####
+@admins.route("/productList/add", methods=["GET", "POST"])
+@login_required
+def addProduct():
+    vendors = Vendors.query.all()
+    choices = [("", "ATC")]
+    for vendor in vendors:
+        choices.append((f"{vendor.id}", f"{vendor.name}"))
+    setattr(AddProductForm, "selectVendor", SelectField('Vendor:', choices=choices))
+    form = AddProductForm()
+
+    if form.validate_on_submit():
+        name = form.category.data + form.name.data.replace(" ", "_")
+        if form.selectVendor.data == "":
+            product = Products(name=name, description=form.description.data, price=form.price.data)
+        else:
+            product = Products(name=name, description=form.description.data, vendorID=form.selectVendor.data, price=form.price.data)
+        db.session.add(product)
+        db.session.commit()
+        flash("Product Added", "success")
+        return redirect(url_for("admins.productList"))
+    return render_template("admins/addProduct.html", title="Register Vendor", form=form)

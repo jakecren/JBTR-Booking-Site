@@ -1,6 +1,6 @@
 from flask import render_template, request, Blueprint, redirect, url_for, flash, session
 from bookingApp.main.forms import *
-from bookingApp import db, Mail, SGmail
+from bookingApp import db, Mail, SGmail, bcrypt
 from bookingApp.models import *
 from wtforms import IntegerField
 from flask_login import login_user, logout_user, current_user, login_required
@@ -149,7 +149,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(email=str(form.email.data).lower()).first()
-        if user and form.password.data == user.password:
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get("next")
             return redirect(next_page) if next_page else redirect(url_for("admins.panel"))

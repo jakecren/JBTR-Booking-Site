@@ -98,10 +98,13 @@
                                 <i class="fas fa-tachometer-alt"></i>Dashboard</a>
                         </li>
                         <li>
+                            <a href="{{ url_for('admins.attendeeList') }}">Attendee List</a>
+                        </li>
+                        <li>
                             <a href="{{ url_for('admins.vendorList') }}">Vendor List</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('admins.attendeeList') }}">attendee List</a>
+                            <a href="{{ url_for('admins.productList') }}">Product List</a>
                         </li>
                     </ul>
                 </nav>
@@ -111,17 +114,18 @@
 
         <!-- PAGE CONTAINER-->
         <div class="page-container">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages  %}
-            <div class="alert alert-{{ category }}"
-                style="padding-top: 10px; margin-top: 10px; margin-left: 5px; margin-right: 0px;">
-                {{ message }}
+            <div class="section__content section__content--p30">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages  %}
+                <div class="alert alert-{{ category }}" style="margin-top: 15px;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
             </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-            {% block content %} {% endblock content %}
+            {% block content %}{% endblock content %}
         </div>
 
     </div>
