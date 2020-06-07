@@ -4,7 +4,6 @@ from bookingApp import db, Mail, SGmail, bcrypt
 from bookingApp.models import *
 from wtforms import IntegerField
 from flask_login import login_user, logout_user, current_user, login_required
-import bcrypt
 
 
 main = Blueprint("main", __name__, template_folder='templates')
