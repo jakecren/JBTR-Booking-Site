@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField, TextAreaField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_login import current_user
 from bookingApp.models import Users, Vendors, Products
@@ -50,8 +50,9 @@ class RegisterVendorForm(FlaskForm):
 
 class AddProductForm(FlaskForm):
     name = StringField("Product Name:", validators=[DataRequired()])
-    description = StringField("Description:")
-    price = FloatField("Price:", validators=[DataRequired()])
+    description = TextAreaField("Description:")
+    price = FloatField("Price:")
+    category = RadioField("Category", choices=[("t_", "Ticket"), ("", "Catering")])
     submit = SubmitField("Add Product")
 
     # Validate unique fields

@@ -1,0 +1,50 @@
+{% extends 'admins/layout.html' %}
+{% from '_helpers.html' import formInput %}
+{% block content %}
+<!-- MAIN CONTENT-->
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="col-lg-10">
+                <div class="overview-item overview-item--c2">
+                    <div class="overview__inner">
+                        <div class="overview-box clearfix">
+                            <h2 style="color: black;" class="title-1 m-b-25">Register Vendor</h2>
+                            <form method="POST" action="">
+                                {{ form.hidden_tag() }}
+                                <div class="row">
+                                    <!-- Text Inputs -->
+                                    {{ formInput(form.forename, placeholder="Enter First Name", grid="col-md-6") }}
+
+                                    {{ formInput(form.surname, placeholder="Enter Last Name", grid="col-md-6") }}
+
+                                    {{ formInput(form.email, placeholder="Enter Email", grid="col-md-6") }}
+
+                                    {{ formInput(form.mobile, placeholder="Enter Mobile", grid="col-md-6") }}
+
+                                    {{ formInput(form.password, placeholder="Enter Password", grid="col-md-6", type="password") }}
+
+                                    {{ formInput(form.confirmPassword, placeholder="Confirm Password", grid="col-md-6", type="password") }}
+
+                                    {{ formInput(form.companyName, placeholder="Enter Company Name", grid="col-md-6") }}
+
+                                    {{ formInput(form.companyEmail, placeholder="Enter Company Email", grid="col-md-6") }}
+
+                                    {{ formInput(form.companyMobile, placeholder="Enter Company Mobile", grid="col-md-6") }}
+
+
+                                    <!-- Button -->
+                                    <div class="form-group" style="padding: 0 15px; margin-top: 33px;">
+                                        {{ form.submit(class="au-btn au-btn--green m-b-20") }}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from flask import render_template, request, Blueprint, redirect, url_for, flash, session
 from bookingApp.main.forms import *
-from bookingApp import db, Mail, SGmail
+from bookingApp import db, Mail, SGmail, bcrypt
 from bookingApp.models import *
 from wtforms import IntegerField
 from flask_login import login_user, logout_user, current_user, login_required
