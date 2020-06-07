@@ -133,7 +133,8 @@ db.session.add(order)""")
 
         message.dynamic_template_data = {
             'content': content.format(tbody=contentStr, total=round(total, 2)),
-            'name': (customer[0] + " " + customer[1])
+            'name': (customer[0] + " " + customer[1]),
+            'refNo': Customer.referenceNo,
             }
         SGmail.send(message)
 
