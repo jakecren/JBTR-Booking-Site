@@ -1,4 +1,5 @@
 {% extends 'admins/layout.html' %}
+{% from '_helpers.html' import formInput %}
 {% block content %}
 <!-- MAIN CONTENT-->
 <div class="main-content">
@@ -239,5 +240,52 @@
             </div>
         </div>
     </div>
+    <!-- Edit User Modal -->
+    {% if userE == True %}
+    <div class="modal fade" id="edituser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit User Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <!-- body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            {{ formInput(form.forename, placeholder="Enter First Name", grid="col-md-6", value=userData[0]) }}
+
+                            {{ formInput(form.surname, placeholder="Enter Last Name", grid="col-md-6", value=userData[1]) }}
+
+                            {{ formInput(form.email, placeholder="Enter Email", grid="col-md-6", value=userData[2]) }}
+
+                            {{ formInput(form.mobile, placeholder="Enter Mobile", grid="col-md-6", value=userData[3]) }}
+
+                            <div class="col-md-12"><br></div>
+
+                            {{ formInput(form.password, placeholder="New Password", grid="col-md-6", type="password") }}
+
+                            {{ formInput(form.confirmPassword, placeholder="Confirm New Password", grid="col-md-6", type="password") }}
+
+                            {{ formInput(form.oldPassword, placeholder="Old Password", grid="col-md-10", type="password") }}
+                        </div>
+                    </div>
+
+                    <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        {{ form.submit(class="btn btn-success") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>$("#edituser").modal();</script>
+    {% endif %}
 </div>
 {% endblock content %}

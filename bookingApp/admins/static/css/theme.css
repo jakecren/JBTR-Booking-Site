@@ -13224,3 +13224,7 @@ section {
 .vue-lists ul, .vue-lists ol {
     padding-left: 30px;
 }
+
+.modal-title {
+    color: rgb(0, 0, 0);
+}
