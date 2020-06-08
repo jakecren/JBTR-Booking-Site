@@ -38,7 +38,7 @@ class Vendors(db.Model): #Company info (company name, company email etc.)
     name = db.Column(db.String(60), nullable=False, unique=True)
     email = db.Column(db.String(60), nullable=False, unique=True)
     mobile = db.Column(db.String(12), nullable=False, unique=True)
-    userID = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    userID = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
     products = db.relationship("Products")
 

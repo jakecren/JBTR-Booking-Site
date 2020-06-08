@@ -15,7 +15,8 @@ def panel():
     orders = Orders.query.all()
     users = Users.query.all()
     vendors = Vendors.query.all()
-    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=False)
+    customers = Customers.query.all()
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(customers), vendors=vendors, userE=False)
 
 #####  Panel - Edit User Modal  ######
 @admins.route("/panel/Edit", methods=["GET","POST"])
@@ -146,14 +147,8 @@ def registerVendor():
         abort(403)
     form = RegisterVendorForm()
     if form.validate_on_submit():
-        hashedPassword = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-        Email = str(form.email.data).lower()
-
-        user = Users(forename=form.forename.data, surname=form.surname.data, email=Email, mobile=form.mobile.data, password=hashedPassword, admin=0)
-        db.session.add(user)
-        db.session.flush()
-
-        vendor = Vendors(name=form.companyName.data, email=form.companyEmail.data, mobile=form.companyMobile.data, userID=user.id)
+        Email = str(form.companyEmail.data).lower()
+        vendor = Vendors(name=form.companyName.data, email=Email, mobile=form.companyMobile.data)
         db.session.add(vendor)
         db.session.commit()
 
