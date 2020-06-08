@@ -22,8 +22,6 @@ def panel():
 @login_required
 def panelEdit():
     form = EditUserForm()
-    userData = [current_user.forename, current_user.surname, current_user.email, current_user.mobile]
-
     products = Products.query.all()
     orders = Orders.query.all()
     users = Users.query.all()
@@ -42,7 +40,14 @@ def panelEdit():
         db.session.commit()
         flash("Your account has been updated!", "success")
         return redirect(url_for('admins.panel'))
-    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=True, form=form, userData=userData)
+
+    elif request.method == "GET":
+        form.forename.data = current_user.forename
+        form.surname.data = current_user.surname
+        form.email.data = current_user.email
+        form.mobile.data = current_user.mobile
+
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=True, form=form)
 
 
 ####  attendee List - View  ####
@@ -50,10 +55,9 @@ def panelEdit():
 @login_required
 def attendeeList():
     attendees = Customers.query.all()
-    refNo = ReferenceNumbers.query.all()
     orders = Orders.query.all()
     products = Products.query.all()
-    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, refNo=refNo, orders=orders, products=products, customerD=None)
+    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, orders=orders, products=products, customerD=None)
 
 ####  attendee List - Delete Modal  ####
 @admins.route("/attendeeList/<int:customerID>")
@@ -61,10 +65,9 @@ def attendeeList():
 def attendeeListDelete(customerID):
     customerD = Customers.query.get_or_404(customerID)
     attendees = Customers.query.all()
-    refNo = ReferenceNumbers.query.all()
     orders = Orders.query.all()
     products = Products.query.all()
-    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, refNo=refNo, orders=orders, products=products, customerD=customerD)
+    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, orders=orders, products=products, customerD=customerD)
 
 ####  Delete Customer  ####
 @admins.route("/DC/<int:customerID>")
@@ -73,14 +76,12 @@ def deleteCustomer(customerID):
     if current_user.admin != 1:
         abort(403)
     customerD = Customers.query.get_or_404(customerID)
-    refNo = ReferenceNumbers.query.get_or_404(customerID)
     orders = Orders.query.all()
 
     for order in orders:
         if order.referenceNumber == customerD.id:
             db.session.delete(order)
 
-    db.session.delete(refNo)
     db.session.delete(customerD)
     db.session.commit()
     flash(f"Customer: {customerD.forename} {customerD.surname} and Associated Orders Deleted", "success")
@@ -234,3 +235,10 @@ def addProduct():
         flash("Product Added", "success")
         return redirect(url_for("admins.productList"))
     return render_template("admins/addProduct.html", title="Register Vendor", form=form)
+
+
+####  Student Volunteers  ####
+@admins.route("/students/")
+@login_required
+def students():
+    return render_template("admins/students.html", title="Students")

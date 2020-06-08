@@ -17,10 +17,6 @@ class Users(db.Model, UserMixin):
 
     vendor = db.relationship("Vendors")
 
-    
-    def __repr__(self):
-        return f"User: {self.forename} {self.surname} ({self.email}, {self.mobile}, {self.admin}, {self.id})"
-
 
 class Customers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,10 +30,7 @@ class Customers(db.Model):
     state = db.Column(db.String(60))
     postcode = db.Column(db.String(4))
 
-    referenceNo = db.relationship("ReferenceNumbers")
-
-    def __repr__(self):
-        return f"Customer: {self.forename} {self.surname} ({self.email}, {self.mobile}, {self.street}, {self.suburb}, {self.city}, {self.state}, {self.postcode}, {self.id})"
+    order = db.relationship("Orders")
 
 
 class Vendors(db.Model): #Company info (company name, company email etc.)
@@ -49,20 +42,6 @@ class Vendors(db.Model): #Company info (company name, company email etc.)
 
     products = db.relationship("Products")
 
-    def __repr__(self):
-        return f"Vendors: {self.name} ({self.email}, {self.mobile}, {self.userID}, {self.id})"
-
-
-class ReferenceNumbers(db.Model):
-    __tablename__ = 'referenceNumbers'
-    referenceNo = db.Column(db.Integer, primary_key=True)
-    customerID = db.Column(db.Integer, db.ForeignKey("customers.id"), nullable=False)
-
-    order = db.relationship("Orders")
-
-    def __repr__(self):
-        return f"Reference Number: {self.referenceNo}, {self.customerID}"
-
 
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -73,15 +52,19 @@ class Products(db.Model):
 
     orders = db.relationship("Orders")
 
-    def __repr__(self):
-        return f"Product: {self.name}, {self.description} (${self.price}, {self.vendorID}, {self.id})"
-
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    referenceNumber = db.Column(db.Integer, db.ForeignKey("referenceNumbers.referenceNo"), nullable=False)
+    referenceNumber = db.Column(db.Integer, db.ForeignKey("customers.id"), nullable=False)
     productID = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
-    def __repr__(self):
-        return f"Order: {self.referenceNo}, {self.productID}, {self.quantity}"
+
+class Students(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    forename = db.Column(db.String(60), nullable=False)
+    surname = db.Column(db.String(60), nullable=False)
+    year = db.Column(db.Integer)
+    email = db.Column(db.String(60), nullable=False)
+    mobile = db.Column(db.String(12))
+    type = db.Column(db.String(1), nullable=False)
