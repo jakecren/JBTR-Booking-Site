@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField, TextAreaField, RadioField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField, TextAreaField, RadioField, FileField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_login import current_user
 from bookingApp.models import Users, Vendors, Products
@@ -59,3 +59,8 @@ class EditUserForm(FlaskForm):
     def validate_mobile(self, mobile):
         if str(mobile.data).isnumeric() != True:
             raise ValidationError("Mobile number can only consist of numbers.")
+
+
+class AddStudentsForm(FlaskForm):
+    csv = FileField("Upload .CSV File", validators=[DataRequired()])
+    submit = SubmitField("Add Students")

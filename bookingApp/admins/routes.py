@@ -236,4 +236,30 @@ def addProduct():
 @admins.route("/students/")
 @login_required
 def students():
-    return render_template("admins/students.html", title="Students")
+    students = Students.query.all()
+    volunteers = []
+    performers = []
+    for student in students:
+        if student.type == "P":
+            performers.append(student)
+        else:
+            volunteers.append(student)
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False)
+
+####  Student Volunteers - Add Students Modal  ####
+@admins.route("/students/add")
+@login_required
+def addStudents():
+    form = AddStudentsForm()
+    students = Students.query.all()
+    volunteers = []
+    performers = []
+    for student in students:
+        if student.type == "P":
+            performers.append(student)
+        else:
+            volunteers.append(student)
+    
+    if form.validate_on_submit:
+        pass
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, form=form, addStudents=True)
