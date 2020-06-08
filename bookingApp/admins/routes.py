@@ -3,6 +3,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 from bookingApp import db, bcrypt
 from bookingApp.admins.forms import *
 from bookingApp.models import *
+from werkzeug.utils import secure_filename
+import os
 
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
@@ -247,7 +249,7 @@ def students():
     return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False)
 
 ####  Student Volunteers - Add Students Modal  ####
-@admins.route("/students/add")
+@admins.route("/students/add", methods=["GET", "POST"])
 @login_required
 def addStudents():
     form = AddStudentsForm()
@@ -260,6 +262,9 @@ def addStudents():
         else:
             volunteers.append(student)
     
-    if form.validate_on_submit:
-        pass
+    if form.validate_on_submit():
+        studnetsCsvFN = secure_filename(form.csv.data.filename)
+        studentsCsv = form.csv.data
+        studentsCsv.save(os.path.join(current_app.root_path, "admins/static/temp/", studnetsCsvFN))
+        return redirect(url_for('admins.students'))
     return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, form=form, addStudents=True)

@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField, TextAreaField, RadioField, FileField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, SelectField, TextAreaField, RadioField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_login import current_user
 from bookingApp.models import Users, Vendors, Products
@@ -62,5 +63,5 @@ class EditUserForm(FlaskForm):
 
 
 class AddStudentsForm(FlaskForm):
-    csv = FileField("Upload .CSV File", validators=[DataRequired()])
+    csv = FileField("Upload .CSV File", validators=[FileAllowed(["csv"]), FileRequired()])
     submit = SubmitField("Add Students")
