@@ -15,7 +15,34 @@ def panel():
     orders = Orders.query.all()
     users = Users.query.all()
     vendors = Vendors.query.all()
-    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors)
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=False)
+
+#####  Panel - Edit User Modal  ######
+@admins.route("/panel/Edit", methods=["GET","POST"])
+@login_required
+def panelEdit():
+    form = EditUserForm()
+    userData = [current_user.forename, current_user.surname, current_user.email, current_user.mobile]
+
+    products = Products.query.all()
+    orders = Orders.query.all()
+    users = Users.query.all()
+    vendors = Vendors.query.all()
+
+    if form.validate_on_submit():
+        current_user.forename = form.forename.data
+        current_user.surname = form.surname.data
+        current_user.email = str(form.email.data).lower()
+        current_user.mobile = form.mobile.data
+
+        if form.password.data != "":
+            if bcrypt.check_password_hash(current_user.password, form.oldPassword.data):
+                current_user.password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+
+        db.session.commit()
+        flash("Your account has been updated!", "success")
+        return redirect(url_for('admins.panel'))
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=True, form=form, userData=userData)
 
 
 ####  attendee List - View  ####

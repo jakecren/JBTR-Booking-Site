@@ -31,6 +31,8 @@ class RegisterVendorForm(FlaskForm):
         user = Users.query.filter_by(mobile=mobile.data).first()
         if user:
             raise ValidationError("Mobile is unavailable, please choose a different mobile.")
+        if not mobile.isnumeric():
+            raise ValidationError("Mobile number can only consist of numbers.")
 
     def validate_companyName(self, companyName):
         vendor = Vendors.query.filter_by(name=companyName.data).first()
@@ -60,3 +62,18 @@ class AddProductForm(FlaskForm):
         vendor = Vendors.query.filter_by(name=name.data).first()
         if vendor:
             raise ValidationError("Name is unavailable, please choose a different name.")
+
+
+class EditUserForm(FlaskForm):
+    forename = StringField("Forename:", validators=[DataRequired()])
+    surname = StringField("Surname:", validators=[DataRequired()])
+    email = StringField("Email:", validators=[DataRequired(), Email()])
+    mobile = StringField("Mobile:", validators=[DataRequired(), Length(10,12)])
+    password = PasswordField("Password:")
+    confirmPassword = PasswordField("Confirm Password:", validators=[EqualTo("password")])
+    oldPassword = PasswordField("Old Password:")
+    submit = SubmitField("Save")
+
+    def validate_mobile(self, mobile):
+        if str(mobile.data).isnumeric() != True:
+            raise ValidationError("Mobile number can only consist of numbers.")

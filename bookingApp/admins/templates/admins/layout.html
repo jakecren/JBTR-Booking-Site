@@ -82,7 +82,7 @@
         <!-- MENU SIDEBAR-->
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="#">
+                <a href="{{ url_for('admins.panelEdit') }}">
                     <h4>
                         <i class="fas fa-user-circle">
                             {{ current_user.forename }} {{ current_user.surname }}
