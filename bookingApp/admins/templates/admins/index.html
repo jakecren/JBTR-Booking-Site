@@ -134,9 +134,6 @@
                                     <td class="text-right">{{ vendor.name }}</td>
                                     {% endif %}
                                     {% endfor %}
-                                    {% if product.vendorID == None %}
-                                    <td class="text-right">ATC</td>
-                                    {% endif %}
 
                                     <td class="text-right">{{ productNS.quantity }}</td>
                                     <td class="text-right">${{ productNS.earnings|round(2) }}</td>

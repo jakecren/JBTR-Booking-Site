@@ -96,8 +96,32 @@ def deleteCustomer(customerID):
 @login_required
 def vendorList():
     vendors = Vendors.query.all()
-    vendorD = None
-    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=vendorD)
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=None)
+
+
+####  Edit Vendor  ####
+@admins.route("/vendorList/edit/<int:vendorID>", methods=["GET", "POST"])
+@login_required
+def editVendor(vendorID):
+    vendors = Vendors.query.all()
+    form = RegisterVendorForm()
+    for vendor in vendors:
+        if vendor.id == vendorID:
+            if form.validate_on_submit():
+                vendor.name = form.companyName.data
+                vendor.email = str(form.companyEmail.data).lower()
+                vendor.mobile = form.companyMobile.data
+
+                db.session.commit()
+                flash("Vendor details have been updated!", "success")
+                return redirect(url_for('admins.vendorList'))
+
+            elif request.method == "GET":
+                form.companyName.data = vendor.name
+                form.companyEmail.data = vendor.email
+                form.companyMobile.data = vendor.mobile
+    
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=None, editVendor=True, form=form)
 
 
 ####  Email Individual Vendor  ####
@@ -256,7 +280,7 @@ def deleteProduct(productID):
 @login_required
 def addProduct():
     vendors = Vendors.query.all()
-    choices = [("", "ATC")]
+    choices = []
     for vendor in vendors:
         choices.append((f"{vendor.id}", f"{vendor.name}"))
     setattr(AddProductForm, "selectVendor", SelectField('Vendor:', choices=choices))
@@ -264,10 +288,7 @@ def addProduct():
 
     if form.validate_on_submit():
         name = form.category.data + form.name.data.replace(" ", "_")
-        if form.selectVendor.data == "":
-            product = Products(name=name, description=form.description.data, price=form.price.data)
-        else:
-            product = Products(name=name, description=form.description.data, vendorID=form.selectVendor.data, price=form.price.data)
+        product = Products(name=name, description=form.description.data, vendorID=form.selectVendor.data, price=form.price.data)
         db.session.add(product)
         db.session.commit()
         flash("Product Added", "success")

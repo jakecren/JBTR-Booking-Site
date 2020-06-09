@@ -1,4 +1,5 @@
 {% extends 'admins/layout.html' %}
+{% from '_helpers.html' import formInput %}
 {% block content %}
 <!-- MAIN CONTENT-->
 <div class="main-content">
@@ -20,6 +21,7 @@
                                     <th>Contact Number</th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -30,6 +32,8 @@
                                     <td>{{ vendor.mobile }}</td>
                                     <td><a href="{{ url_for('admins.emailVendor', vendorID=vendor.id) }}"
                                             class="btn btn-info">Email Report</a></td>
+                                    <td><a href="{{ url_for('admins.editVendor', vendorID=vendor.id) }}"
+                                            class="btn btn-outline-primary">Edit Vendor</a></td>
                                     <td>
                                         <a href="{{ url_for('admins.vendorListDelete', vendorID=vendor.id) }}"
                                             class="btn btn-danger">Delete</a>
@@ -73,8 +77,46 @@
             </div>
         </div>
     </div>
-
     <script>$("#deleteVendorModal").modal();</script>
+    {% endif %}
+
+    <!-- Edit Vendor Modal -->
+    {% if editVendor == True %}
+    <div class="modal fade" id="editVendor">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Vendor Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <!-- body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Text Inputs -->
+                            {{ formInput(form.companyName, placeholder="Enter Company Name", grid="col-md-6") }}
+
+                            {{ formInput(form.companyEmail, placeholder="Enter Company Email", grid="col-md-6") }}
+
+                            {{ formInput(form.companyMobile, placeholder="Enter Company Mobile", grid="col-md-6") }}
+                        </div>
+                    </div>
+
+                    <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        {{ form.submit(class="btn btn-success") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>$("#editVendor").modal();</script>
     {% endif %}
 </div>
 {% endblock content %}

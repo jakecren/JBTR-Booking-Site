@@ -37,9 +37,6 @@
                                     <td>{{ vendor.name }}</td>
                                     {% endif %}
                                     {% endfor %}
-                                    {% if product.vendorID == None %}
-                                    <td>ATC</td>
-                                    {% endif %}
                                     <td>${{ product.price }}</td>
                                     <td>
                                         <a href="{{ url_for('admins.productListDelete', productID=product.id) }}"
