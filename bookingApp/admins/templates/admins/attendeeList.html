@@ -1,0 +1,92 @@
+{% extends 'admins/layout.html' %}
+{% block content %}
+<!-- MAIN CONTENT-->
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="title-1 m-b-25">Attendees</h2>
+                    <div class="table-responsive table--no-card m-b-40">
+                        <table class="table table-borderless table-striped table-earning">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Tickets RSVP'd</th>
+                                    <th>Catering RSVP'd</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attendee in attendees %}
+
+                                {% set rsvps = namespace(tickets=0, catering=0) %}
+                                {% for order in orders %}
+                                {% if order.referenceNumber == attendee.id %}
+                                {% for product in products %}
+                                {% if order.productID == product.id %}
+                                {% if product.name[:2] == "t_" %}
+                                {% set rsvps.tickets = rsvps.tickets + 1 %}
+                                {% else %}
+                                {% set rsvps.catering = rsvps.catering + 1 %}
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+
+                                <tr>
+                                    <td>{{ attendee.forename }} {{ attendee.surname }}</td>
+                                    <td>{{ attendee.email }}</td>
+                                    <td>{{ rsvps.tickets }}</td>
+                                    <td>{{ rsvps.catering }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admins.attendeeListDelete', customerID=attendee.id) }}"
+                                            class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete RSVP Modal -->
+    {% if customerD != None %}
+    <div class="modal fade" id="deleteRSVPModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Remove RSVP</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- body -->
+                <div class="modal-body">
+                    <b>Warning!</b><br>
+                    This will remove the customer and all associated orders from the database <u>permanently</u>!
+                    <br><br>
+                    Deleting record: {{ customerD.forename }} {{ customerD.surname }}
+                </div>
+
+                <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                    <a href="{{ url_for('admins.deleteCustomer', customerID=customerD.id) }}"
+                        class="btn btn-danger">DELETE RECORD</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>$("#deleteRSVPModal").modal();</script>
+    {% endif %}
+
+</div>
+{% endblock content %}
