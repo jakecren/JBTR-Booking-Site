@@ -4,7 +4,7 @@ from bookingApp import db, bcrypt
 from bookingApp.admins.forms import *
 from bookingApp.models import *
 from werkzeug.utils import secure_filename
-import os
+import os, csv
 
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
@@ -246,7 +246,7 @@ def students():
             performers.append(student)
         else:
             volunteers.append(student)
-    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False)
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False, studentD=None)
 
 ####  Student Volunteers - Add Students Modal  ####
 @admins.route("/students/add", methods=["GET", "POST"])
@@ -265,6 +265,43 @@ def addStudents():
     if form.validate_on_submit():
         studnetsCsvFN = secure_filename(form.csv.data.filename)
         studentsCsv = form.csv.data
-        studentsCsv.save(os.path.join(current_app.root_path, "admins/static/temp/", studnetsCsvFN))
+        csvPath = os.path.join(current_app.root_path, "admins/static/temp/", studnetsCsvFN)
+        studentsCsv.save(csvPath)
+
+        with open(csvPath) as csvFile:
+            i = 1
+            for line in csvFile:
+                if i != 1:
+                    if line[0] == '"':
+                        line = line[1:-2].split(",")
+                    student = Students(forename=line[0], surname=line[1], year=line[2], type=line[3], mobile=line[4], email=line[5])
+                    db.session.add(student)
+                else:
+                    i += 1
+                db.session.commit()
         return redirect(url_for('admins.students'))
-    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, form=form, addStudents=True)
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, form=form, addStudents=True, studentD=None)
+
+####  Student Volunteers - Delete Student Modal  ####
+@admins.route("/students/delete/<int:studentID>")
+@login_required
+def deleteStudentModal(studentID):
+    students = Students.query.all()
+    studentD = Students.query.get_or_404(studentID)
+    volunteers = []
+    performers = []
+    for student in students:
+        if student.type == "P":
+            performers.append(student)
+        else:
+            volunteers.append(student)
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False, studentD=studentD)
+
+####  Student Volunteers - Delete Record ####
+@admins.route("/students/delete/<int:studentID>/d")
+@login_required
+def deleteStudent(studentID):
+    studentD = Students.query.get_or_404(studentID)
+    db.session.delete(studentD)
+    db.session.commit()
+    return redirect(url_for('admins.students'))

@@ -18,6 +18,7 @@
                                     <th>Year</th>
                                     <th>Email</th>
                                     <th>Phone</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -26,7 +27,9 @@
                                     <td>{{ volunteer.forename }} {{ volunteer.surname }}</td>
                                     <td>{{ volunteer.year }}</td>
                                     <td>{{ volunteer.email }}</td>
-                                    <td>{{ volunteer.phone }}</td>
+                                    <td>{{ volunteer.mobile }}</td>
+                                    <td><a href="{{ url_for('admins.deleteStudentModal', studentID=volunteer.id) }}"
+                                            class="btn btn-danger">Delete</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -44,6 +47,7 @@
                                     <th>Year</th>
                                     <th>Email</th>
                                     <th>Phone</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,7 +56,9 @@
                                     <td>{{ performer.forename }} {{ performer.surname }}</td>
                                     <td>{{ performer.year }}</td>
                                     <td>{{ performer.email }}</td>
-                                    <td>{{ performer.phone }}</td>
+                                    <td>{{ performer.mobile }}</td>
+                                    <td><a href="{{ url_for('admins.deleteStudentModal', studentID=performer.id) }}"
+                                            class="btn btn-danger">Delete</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -90,8 +96,40 @@
             </div>
         </div>
     </div>
-
     <script>$("#addStudentsModal").modal();</script>
     {% endif %}
+
+    <!-- Delete Student Modal -->
+    {% if studentD != None %}
+    <div class="modal fade" id="deleteStudentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Remove Student</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- body -->
+                <div class="modal-body">
+                    <b>Warning!</b><br>
+                    This will remove the student <u>permanently</u>!
+                    <br><br>
+                    Deleting record: {{ studentD.forename }} {{ studentD.surname }}
+                </div>
+
+                <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                    <a href="{{ url_for('admins.deleteStudent', studentID=studentD.id) }}" class="btn btn-danger">DELETE
+                        RECORD</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>$("#deleteStudentModal").modal();</script>
+    {% endif %}
+
 </div>
 {% endblock content %}
