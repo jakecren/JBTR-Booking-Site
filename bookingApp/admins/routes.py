@@ -295,6 +295,46 @@ def addProduct():
         return redirect(url_for("admins.productList"))
     return render_template("admins/addProduct.html", title="Register Vendor", form=form)
 
+
+####  Edit Product  ####
+@admins.route("/productList/edit/<int:productID>", methods=["GET", "POST"])
+@login_required
+def editProduct(productID):
+    products = Products.query.all()
+    vendors = Vendors.query.all()
+    choices = []
+    for vendor in vendors:
+        choices.append((f"{vendor.id}", f"{vendor.name}"))
+    setattr(AddProductForm, "selectVendor", SelectField('Vendor:', choices=choices))
+    form = AddProductForm()
+    for product in products:
+        if product.id == productID:
+            if form.validate_on_submit():
+                product.name = str(form.category.data + form.name.data)
+                product.description = form.description.data
+                product.price = form.price.data
+                product.vendorID = form.selectVendor.data
+
+                db.session.commit()
+                flash("Product details have been updated!", "success")
+                return redirect(url_for('admins.productList'))
+
+            elif request.method == "GET":
+                form.description.data = product.description
+                form.price.data = product.price
+                form.selectVendor.data = str(product.vendorID)
+                if product.name[:2] == "t_":
+                    form.category.data = "t_"
+                    form.name.data = product.name[1:].replace("_", " ")
+                else:
+                    form.category.data = ""
+                    form.name.data = product.name.replace("_", " ")
+            flash("Product details updated.", "success")
+            redirect(url_for('admins.productList'))
+
+    return render_template("admins/productList.html", title="Product List", products=products, productD=None, vendors=vendors, editProduct=True, form=form)
+
+
 ####  Add CSV Products  ####
 @admins.route("/productList/add/csv", methods=["GET", "POST"])
 @login_required
@@ -328,9 +368,9 @@ def addCsvProducts():
                         db.session.add(newVendor)
                         db.session.flush()
                         newVendors.append(newVendor.name)
-                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=newVendor.id)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=newVendor.id, description="")
                     else:
-                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=vendorID)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=vendorID, description="")
                     for product in products:
                         if newProduct.name == product.name:
                             duplicateProducts.append(newProduct.name)
