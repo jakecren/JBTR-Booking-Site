@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, abort
 from flask_login import login_user, current_user, logout_user, login_required
-from bookingApp import db, bcrypt
+from bookingApp import db, bcrypt, Mail, SGmail
 from bookingApp.admins.forms import *
 from bookingApp.models import *
 from werkzeug.utils import secure_filename
@@ -98,6 +98,57 @@ def vendorList():
     vendors = Vendors.query.all()
     vendorD = None
     return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=vendorD)
+
+
+####  Email Individual Vendor  ####
+@admins.route("/vendorList/email/<int:vendorID>")
+@login_required
+def emailVendor(vendorID):
+    vendors = Vendors.query.all()
+    orders = Orders.query.all()
+    products = Products.query.all()
+    for vendor in vendors:
+        if vendor.id == vendorID:
+            if vendor.email != None:
+                message = Mail(
+                    from_email="noreply@atcjbtrrsvp.com",
+                    to_emails=vendor.email,
+                )
+                message.template_id = "d-a51ebb7b223d40bd92ff66781767ff3e"
+                
+                with open('bookingApp/admins/templates/admins/emails/vendorUpdate.html', 'r') as f:
+                    content = f.read()
+
+                total = 0
+                contentStr = ""
+                orderedProducts = {}
+                for product in products:
+                    if product.vendorID == vendor.id:
+                        for order in orders:
+                            if order.productID == product.id:
+                                if product.id in orderedProducts:
+                                    orderedProducts[product.id] += order.quantity
+                                else:
+                                    orderedProducts[product.id] = order.quantity
+                                total += order.quantity
+                
+                        contentStr += f"""
+                        <tr>
+                            <td>{product.name.replace("_", " ")}</td>
+                            <td>{orderedProducts.get(product.id)}</td>
+                        </tr>
+                        """
+
+                message.dynamic_template_data = {
+                    'vendorName': vendor.name,
+                    'content': content.format(tbody=contentStr, total=total),
+                }
+                SGmail.send(message)
+                flash("Report has been emailed.", "success")
+                return redirect(url_for('admins.vendorList'))
+            else:
+                flash("Sorry, this vendor does not have an associated email, please add this and try again.", "warning")
+                return redirect(url_for('admins.vendorList'))
 
 
 #####  Vendor List - Delete Modal  #####
@@ -256,9 +307,9 @@ def addCsvProducts():
                         db.session.add(newVendor)
                         db.session.flush()
                         newVendors.append(newVendor.name)
-                        newProduct = Products(name=row[0], price=int(row[1]), vendorID=newVendor.id)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=newVendor.id)
                     else:
-                        newProduct = Products(name=row[0], price=int(row[1]), vendorID=vendorID)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=vendorID)
                     for product in products:
                         if newProduct.name == product.name:
                             duplicateProducts.append(newProduct.name)

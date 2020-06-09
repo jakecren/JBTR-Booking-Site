@@ -19,6 +19,7 @@
                                     <th>Email</th>
                                     <th>Contact Number</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -27,6 +28,8 @@
                                     <td>{{ vendor.name }}</td>
                                     <td>{{ vendor.email }}</td>
                                     <td>{{ vendor.mobile }}</td>
+                                    <td><a href="{{ url_for('admins.emailVendor', vendorID=vendor.id) }}"
+                                            class="btn btn-info">Email Report</a></td>
                                     <td>
                                         <a href="{{ url_for('admins.vendorListDelete', vendorID=vendor.id) }}"
                                             class="btn btn-danger">Delete</a>
