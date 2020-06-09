@@ -3,6 +3,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 from bookingApp import db, bcrypt
 from bookingApp.admins.forms import *
 from bookingApp.models import *
+from werkzeug.utils import secure_filename
+import os, csv
 
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
@@ -15,15 +17,14 @@ def panel():
     orders = Orders.query.all()
     users = Users.query.all()
     vendors = Vendors.query.all()
-    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=False)
+    customers = Customers.query.all()
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(customers), vendors=vendors, userE=False)
 
 #####  Panel - Edit User Modal  ######
 @admins.route("/panel/Edit", methods=["GET","POST"])
 @login_required
 def panelEdit():
     form = EditUserForm()
-    userData = [current_user.forename, current_user.surname, current_user.email, current_user.mobile]
-
     products = Products.query.all()
     orders = Orders.query.all()
     users = Users.query.all()
@@ -42,7 +43,14 @@ def panelEdit():
         db.session.commit()
         flash("Your account has been updated!", "success")
         return redirect(url_for('admins.panel'))
-    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=True, form=form, userData=userData)
+
+    elif request.method == "GET":
+        form.forename.data = current_user.forename
+        form.surname.data = current_user.surname
+        form.email.data = current_user.email
+        form.mobile.data = current_user.mobile
+
+    return render_template("admins/index.html", title="Admin", products=products, orders=orders, totalTransactions=len(users), vendors=vendors, userE=True, form=form)
 
 
 ####  attendee List - View  ####
@@ -50,10 +58,9 @@ def panelEdit():
 @login_required
 def attendeeList():
     attendees = Customers.query.all()
-    refNo = ReferenceNumbers.query.all()
     orders = Orders.query.all()
     products = Products.query.all()
-    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, refNo=refNo, orders=orders, products=products, customerD=None)
+    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, orders=orders, products=products, customerD=None)
 
 ####  attendee List - Delete Modal  ####
 @admins.route("/attendeeList/<int:customerID>")
@@ -61,10 +68,9 @@ def attendeeList():
 def attendeeListDelete(customerID):
     customerD = Customers.query.get_or_404(customerID)
     attendees = Customers.query.all()
-    refNo = ReferenceNumbers.query.all()
     orders = Orders.query.all()
     products = Products.query.all()
-    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, refNo=refNo, orders=orders, products=products, customerD=customerD)
+    return render_template("admins/attendeeList.html", title="attendee List", attendees=attendees, orders=orders, products=products, customerD=customerD)
 
 ####  Delete Customer  ####
 @admins.route("/DC/<int:customerID>")
@@ -73,14 +79,12 @@ def deleteCustomer(customerID):
     if current_user.admin != 1:
         abort(403)
     customerD = Customers.query.get_or_404(customerID)
-    refNo = ReferenceNumbers.query.get_or_404(customerID)
     orders = Orders.query.all()
 
     for order in orders:
         if order.referenceNumber == customerD.id:
             db.session.delete(order)
 
-    db.session.delete(refNo)
     db.session.delete(customerD)
     db.session.commit()
     flash(f"Customer: {customerD.forename} {customerD.surname} and Associated Orders Deleted", "success")
@@ -145,14 +149,8 @@ def registerVendor():
         abort(403)
     form = RegisterVendorForm()
     if form.validate_on_submit():
-        hashedPassword = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-        Email = str(form.email.data).lower()
-
-        user = Users(forename=form.forename.data, surname=form.surname.data, email=Email, mobile=form.mobile.data, password=hashedPassword, admin=0)
-        db.session.add(user)
-        db.session.flush()
-
-        vendor = Vendors(name=form.companyName.data, email=form.companyEmail.data, mobile=form.companyMobile.data, userID=user.id)
+        Email = str(form.companyEmail.data).lower()
+        vendor = Vendors(name=form.companyName.data, email=Email, mobile=form.companyMobile.data)
         db.session.add(vendor)
         db.session.commit()
 
@@ -234,3 +232,76 @@ def addProduct():
         flash("Product Added", "success")
         return redirect(url_for("admins.productList"))
     return render_template("admins/addProduct.html", title="Register Vendor", form=form)
+
+
+####  Student Volunteers  ####
+@admins.route("/students/")
+@login_required
+def students():
+    students = Students.query.all()
+    volunteers = []
+    performers = []
+    for student in students:
+        if student.type == "P":
+            performers.append(student)
+        else:
+            volunteers.append(student)
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False, studentD=None)
+
+####  Student Volunteers - Add Students Modal  ####
+@admins.route("/students/add", methods=["GET", "POST"])
+@login_required
+def addStudents():
+    form = AddStudentsForm()
+    students = Students.query.all()
+    volunteers = []
+    performers = []
+    for student in students:
+        if student.type == "P":
+            performers.append(student)
+        else:
+            volunteers.append(student)
+    
+    if form.validate_on_submit():
+        studnetsCsvFN = secure_filename(form.csv.data.filename)
+        studentsCsv = form.csv.data
+        csvPath = os.path.join(current_app.root_path, "admins/static/temp/", studnetsCsvFN)
+        studentsCsv.save(csvPath)
+
+        with open(csvPath) as csvFile:
+            i = 1
+            for line in csvFile:
+                if i != 1:
+                    if line[0] == '"':
+                        line = line[1:-2].split(",")
+                    student = Students(forename=line[0], surname=line[1], year=line[2], type=line[3], mobile=line[4], email=line[5])
+                    db.session.add(student)
+                else:
+                    i += 1
+                db.session.commit()
+        return redirect(url_for('admins.students'))
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, form=form, addStudents=True, studentD=None)
+
+####  Student Volunteers - Delete Student Modal  ####
+@admins.route("/students/delete/<int:studentID>")
+@login_required
+def deleteStudentModal(studentID):
+    students = Students.query.all()
+    studentD = Students.query.get_or_404(studentID)
+    volunteers = []
+    performers = []
+    for student in students:
+        if student.type == "P":
+            performers.append(student)
+        else:
+            volunteers.append(student)
+    return render_template("admins/students.html", title="Students", performers=performers, volunteers=volunteers, addStudents=False, studentD=studentD)
+
+####  Student Volunteers - Delete Record ####
+@admins.route("/students/delete/<int:studentID>/d")
+@login_required
+def deleteStudent(studentID):
+    studentD = Students.query.get_or_404(studentID)
+    db.session.delete(studentD)
+    db.session.commit()
+    return redirect(url_for('admins.students'))

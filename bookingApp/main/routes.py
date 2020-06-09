@@ -32,7 +32,20 @@ def rsvp():
         session.modified = True
         
         return redirect(url_for('main.rsvp_2'))
-    return render_template("main/rsvp_1.html", title="RSVP", form=form, customer=customer)
+    
+    if customer != None:
+        if request.method == "GET":
+            form.forename.data = customer[0]
+            form.surname.data = customer[1]
+            form.email.data = customer[2]
+            form.mobile.data = customer[3]
+            form.street.data = customer[4]
+            form.suburb.data = customer[5]
+            form.city.data = customer[6]
+            form.state.data = customer[7]
+            form.postcode.data = customer[8]
+
+    return render_template("main/rsvp_1.html", title="RSVP", form=form)
 
 
 #####  RSVP - Page 2  #####
@@ -90,13 +103,9 @@ def rsvp_3():
         db.session.add(Customer)
         db.session.flush()
 
-        refNo = ReferenceNumbers(customerID=Customer.id)
-        db.session.add(refNo)
-        db.session.flush()
-
         for product in products:
             if product.name in session.get('orderedProducts'):
-                exec(f"""order = Orders(referenceNumber=refNo.referenceNo, productID=session.get('{product.name}')[0], quantity=session.get('{product.name}')[1])
+                exec(f"""order = Orders(referenceNumber=Customer.id, productID=session.get('{product.name}')[0], quantity=session.get('{product.name}')[1])
 db.session.add(order)""")
         db.session.commit()
         session.clear()
@@ -133,7 +142,7 @@ db.session.add(order)""")
         message.dynamic_template_data = {
             'content': content.format(tbody=contentStr, total=round(total, 2)),
             'name': (customer[0] + " " + customer[1]),
-            'refNo': Customer.referenceNo,
+            'refNo': Customer.id,
             }
         SGmail.send(message)
 

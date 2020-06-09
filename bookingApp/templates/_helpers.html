@@ -18,7 +18,7 @@
         {% endfor %}
     </div>
     {% else %}
-    {{ name(placeholder=kwargs['placeholder'], class="form-control au-input au-input--full", type=kwargs['type'], step=kwargs['step'], min=kwargs['min'], value=kwargs['value']) }}
+    {{ name(placeholder=kwargs['placeholder'], class="form-control au-input au-input--full", type=kwargs['type'], step=kwargs['step'], min=kwargs['min']) }}
     {% endif %}
 </div>
 {% endmacro %}
