@@ -7,8 +7,20 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h2 class="title-1 m-b-25">Attendees</h2>
+                    <input type="text" name="search" id="search" class="form-control au-input au-input--full m-b-25"
+                        placeholder="Search:">
+                    <script>
+                        $(document).ready(function () {
+                            $("#search").on("keyup", function () {
+                                var value = $(this).val().toLowerCase();
+                                $("#attendeeTable tbody tr").filter(function () {
+                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                });
+                            });
+                        });
+                    </script>
                     <div class="table-responsive table--no-card m-b-40">
-                        <table class="table table-borderless table-striped table-earning">
+                        <table class="table table-borderless table-striped table-earning" id="attendeeTable">
                             <thead>
                                 <tr>
                                     <th>Name</th>

@@ -8,6 +8,13 @@ import os, csv
 
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
+#####  Logout User  #####
+@admins.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.splash'))
+
 
 #####  Panel  ######
 @admins.route("/panel")
@@ -104,7 +111,7 @@ def vendorList():
 @login_required
 def editVendor(vendorID):
     vendors = Vendors.query.all()
-    form = RegisterVendorForm()
+    form = EditVendorForm()
     for vendor in vendors:
         if vendor.id == vendorID:
             if form.validate_on_submit():
@@ -168,11 +175,60 @@ def emailVendor(vendorID):
                     'content': content.format(tbody=contentStr, total=total),
                 }
                 SGmail.send(message)
-                flash("Report has been emailed.", "success")
+                flash(f"Report has been emailed to vendor {vendor.name}.", "success")
                 return redirect(url_for('admins.vendorList'))
             else:
-                flash("Sorry, this vendor does not have an associated email, please add this and try again.", "warning")
+                flash(f"Sorry, vendor {vendor.name} does not have an associated email, please add this and try again.", "warning")
                 return redirect(url_for('admins.vendorList'))
+
+
+####  Email All Vendors  ####
+@admins.route("/vendorList/emailAll")
+@login_required
+def emailAllVendors():
+    vendors = Vendors.query.all()
+    orders = Orders.query.all()
+    products = Products.query.all()
+    for vendor in vendors:
+        if vendor.email != None:
+            message = Mail(
+                from_email="noreply@atcjbtrrsvp.com",
+                to_emails=vendor.email,
+            )
+            message.template_id = "d-a51ebb7b223d40bd92ff66781767ff3e"
+            
+            with open('bookingApp/admins/templates/admins/emails/vendorUpdate.html', 'r') as f:
+                content = f.read()
+
+            total = 0
+            contentStr = ""
+            orderedProducts = {}
+            for product in products:
+                if product.vendorID == vendor.id:
+                    for order in orders:
+                        if order.productID == product.id:
+                            if product.id in orderedProducts:
+                                orderedProducts[product.id] += order.quantity
+                            else:
+                                orderedProducts[product.id] = order.quantity
+                            total += order.quantity
+            
+                    contentStr += f"""
+                    <tr>
+                        <td>{product.name.replace("_", " ")}</td>
+                        <td>{orderedProducts.get(product.id)}</td>
+                    </tr>
+                    """
+
+            message.dynamic_template_data = {
+                'vendorName': vendor.name,
+                'content': content.format(tbody=contentStr, total=total),
+            }
+            SGmail.send(message)
+            flash(f"Report has been emailed to vendor {vendor.name}.", "success")
+        else:
+            flash(f"Sorry, vendor {vendor.name} does not have an associated email, please add this and try again.", "warning")
+    return redirect(url_for('admins.vendorList'))
 
 
 #####  Vendor List - Delete Modal  #####
@@ -310,7 +366,7 @@ def editProduct(productID):
     for product in products:
         if product.id == productID:
             if form.validate_on_submit():
-                product.name = str(form.category.data + form.name.data)
+                product.name = str(form.category.data + form.name.data.replace(" ", "_"))
                 product.description = form.description.data
                 product.price = form.price.data
                 product.vendorID = form.selectVendor.data

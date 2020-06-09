@@ -9,11 +9,27 @@
                 <div class="col-lg-12">
                     <div class="overview-wrap">
                         <h2 class="title-1 m-b-25">Vendors</h2>
-                        <a href="{{ url_for('admins.registerVendor') }}" class="au-btn btn-success m-b-25">Add
-                            Vendor</a>
+                        <div class="table-data__tool-right">
+                            <a href="{{ url_for('admins.emailAllVendors') }}" class="au-btn btn-info m-b-25">Email All
+                                Vendors</a>
+                            <a href="{{ url_for('admins.registerVendor') }}" class="au-btn btn-success m-b-25">Add
+                                Vendor</a>
+                        </div>
                     </div>
+                    <input type="text" name="search" id="search" class="form-control au-input au-input--full m-b-25"
+                        placeholder="Search:">
+                    <script>
+                        $(document).ready(function () {
+                            $("#search").on("keyup", function () {
+                                var value = $(this).val().toLowerCase();
+                                $("#vendorTable tbody tr").filter(function () {
+                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                });
+                            });
+                        });
+                    </script>
                     <div class="table-responsive table--no-card m-b-40">
-                        <table class="table table-borderless table-striped table-earning">
+                        <table class="table table-borderless table-striped table-earning" id="vendorTable">
                             <thead>
                                 <tr>
                                     <th>Name</th>

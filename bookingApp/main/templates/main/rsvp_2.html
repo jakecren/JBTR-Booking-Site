@@ -77,7 +77,7 @@
 								{% if product.name[:2] != 't_' %}
 								<tr>
 									<td>{{ product.name|replace('_', ' ') }}</td>
-									<td>{{ product.description }}</td>
+									<td style="max-width: 200px; overflow: auto">{{ product.description }}</td>
 									<td>${{ product.price }}</td>
 									{% if customerOrders is not defined %}
 									<td>{{ render_field(form[product.name], type="number", value=0, min=0) }}</td>

@@ -17,8 +17,20 @@
                                 Products from CSV</a>
                         </div>
                     </div>
+                    <input type="text" name="search" id="search" class="form-control au-input au-input--full m-b-25"
+                        placeholder="Search:">
+                    <script>
+                        $(document).ready(function () {
+                            $("#search").on("keyup", function () {
+                                var value = $(this).val().toLowerCase();
+                                $("#productTable tbody tr").filter(function () {
+                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                });
+                            });
+                        });
+                    </script>
                     <div class="table-responsive table--no-card m-b-40">
-                        <table class="table table-borderless table-striped table-earning">
+                        <table class="table table-borderless table-striped table-earning" id="productTable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -32,15 +44,17 @@
                             <tbody>
                                 {% for product in products %}
                                 <tr>
-                                    <td>{{ product.name|replace('t_', '', 1)|replace('_', ' ') }}</td>
-                                    <td>{{ product.description }}</td>
+                                    <td style="max-width: 250px; overflow: auto">
+                                        {{ product.name|replace('t_', '', 1)|replace('_', ' ') }}</td>
+                                    <td style="max-width: 150px; overflow: auto">{{ product.description }}</td>
                                     {% for vendor in vendors %}
                                     {% if vendor.id == product.vendorID %}
                                     <td>{{ vendor.name }}</td>
                                     {% endif %}
                                     {% endfor %}
                                     <td>${{ product.price }}</td>
-                                    <td><a href="{{ url_for('admins.editProduct', productID=product.id) }}"
+                                    <td>
+                                        <a href="{{ url_for('admins.editProduct', productID=product.id) }}"
                                             class="btn btn-outline-primary">Edit Product</a>
                                     </td>
                                     <td>
