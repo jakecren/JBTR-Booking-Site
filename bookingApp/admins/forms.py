@@ -33,6 +33,19 @@ class RegisterVendorForm(FlaskForm):
             raise ValidationError("Mobile number can only consist of numbers.")
 
 
+class EditVendorForm(FlaskForm):
+    # Company Info
+    companyName = StringField("Company Name:", validators=[DataRequired()])
+    companyEmail = StringField("Company Email:", validators=[DataRequired(), Email()])
+    companyMobile = StringField("Company Mobile:", validators=[DataRequired(), Length(10,12)])
+
+    submit = SubmitField("Register")
+    
+    def validate_companyMobile(self, companyMobile):
+        if companyMobile.data.isnumeric() == False:
+            raise ValidationError("Mobile number can only consist of numbers.")
+
+
 class AddProductForm(FlaskForm):
     name = StringField("Product Name:", validators=[DataRequired()])
     description = TextAreaField("Description:")

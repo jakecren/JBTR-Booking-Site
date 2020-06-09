@@ -24,35 +24,15 @@
 	<section class="wrapper style1">
 		<div class="inner">
 			<header class="align-center" id="content">
-				<h2>RSVP - HELP</h2>
-				<p>Made a mistake when registering? Follow the 'help' section to amend issues.</p>
+				<h2>RSVP</h2>
+				<p>Press below to RSVP, for more information, scroll down!</p>
 			</header>
 			<!-- 2 Column Picture Section -->
-			<div class="flex flex-2">
-				<div class="video col">
-					<div class="image fit">
-						<img src="/static/images/rsvp.jpg" alt="" />
-						<div class="arrow">
-							<div class="icon fa-play"></div>
-						</div>
-					</div>
-					<p class="caption">
-						Click here to register your attendance!
-					</p>
-					<a href="{{ url_for('main.rsvp') }}" class="link"><span>Click Me</span></a>
+			<div class="video align-center">
+				<div class="image fit">
+					<img src="/static/images/rsvp.jpg" alt="" />
 				</div>
-				<div class="video col">
-					<div class="image fit">
-						<img src="/static/images/help.jpg" alt="" />
-						<div class="arrow">
-							<div class="icon fa-play"></div>
-						</div>
-					</div>
-					<p class="caption">
-						Click here to help resolve any issues
-					</p>
-					<a href="generic.html" class="link"><span>Click Me</span></a>
-				</div>
+				<a href="{{ url_for('main.rsvp') }}" class="link"><span>Click Me</span></a>
 			</div>
 			<div class="align-center">
 				<a href="#about" class="button big alt scrolly">Event Information</a>
@@ -69,46 +49,49 @@
 				<p>Jazz By The River is an annual jazz festival that takes place at Ambrose Treacy, a river-side
 					college in the brisbane city catchement.</p>
 			</header>
+			<h4>Available Tickets:</h4>
+			<table class="table-wrapper">
+				<thead>
+					<tr>
+						<th>Product</th>
+						<th>Description</th>
+						<th>Price</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for product in products %}
+					{% if product.name[:2] == 't_' %}
+					<tr>
+						<td>{{ product.name[2:]|replace('_', ' ') }}</td>
+						<td>{{ product.description }}</td>
+						<td>${{ product.price }}</td>
+					</tr>
+					{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
 
-			<!-- 3 Column Picture Section -->
-			<div class="flex flex-3">
-				<div class="video col">
-					<div class="image fit">
-						<img src="/static/images/pic09.jpg" alt="" />
-						<div class="arrow">
-							<div class="icon fa-play"></div>
-						</div>
-					</div>
-					<p class="caption">
-						Cras eget lacus sed mauris scelerisque tincidunt
-					</p>
-					<a href="generic.html" class="link"><span>Click Me</span></a>
-				</div>
-				<div class="video col">
-					<div class="image fit">
-						<img src="/static/images/pic10.jpg" alt="" />
-						<div class="arrow">
-							<div class="icon fa-play"></div>
-						</div>
-					</div>
-					<p class="caption">
-						Vivamus vulputate lacus non massa auctor lobortis
-					</p>
-					<a href="generic.html" class="link"><span>Click Me</span></a>
-				</div>
-				<div class="video col">
-					<div class="image fit">
-						<img src="/static/images/pic11.jpg" alt="" />
-						<div class="arrow">
-							<div class="icon fa-play"></div>
-						</div>
-					</div>
-					<p class="caption">
-						Nam eu nisi non ante sodales interdum a vitae neque
-					</p>
-					<a href="generic.html" class="link"><span>Click Me</span></a>
-				</div>
-			</div>
+			<h4>Available Catering Options:</h4>
+			<table class="table-wrapper">
+				<thead>
+					<tr>
+						<th>Product</th>
+						<th>Description</th>
+						<th>Price</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for product in products %}
+					{% if product.name[:2] != 't_' %}
+					<tr>
+						<td>{{ product.name|replace('_', ' ') }}</td>
+						<td style="max-width: 300px; overflow: auto">{{ product.description }}</td>
+						<td>${{ product.price }}</td>
+					</tr>
+					{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
 			<div class="align-center">
 				<a href="#gallery" class="button big alt scrolly">Gallery</a>
 			</div>
@@ -123,7 +106,7 @@
 		<header id="gallery">
 			<h2>Gallery</h2>
 			<p>A collection of memories from our previous JBTR
-				events!<br>https://www.w3schools.com/howto/howto_css_modal_images.asp</p>
+				events!</p>
 		</header>
 
 		<!-- Tabbed Picture Section -->
@@ -142,42 +125,42 @@
 						<div class="image fit">
 							<img src="/static/images/pic06.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic09.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic13.jpeg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic12.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic04.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic02.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 				</div>
 
@@ -188,42 +171,42 @@
 						<div class="image fit">
 							<img src="/static/images/pic01.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic03.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic05.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic07.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic08.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic10.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 				</div>
 
@@ -234,7 +217,7 @@
 						<div class="image fit">
 							<img src="/static/images/pic11.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 
 					<!-- Picture Thumbnail -->
@@ -242,35 +225,35 @@
 						<div class="image fit">
 							<img src="/static/images/pic14.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic15.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic16.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic17.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 					<!-- Picture Thumbnail -->
 					<div class="video col">
 						<div class="image fit">
 							<img src="/static/images/pic18.jpg" alt="" />
 						</div>
-						<a href="generic.html" class="link"><span>Click Me</span></a>
+
 					</div>
 				</div>
 			</div>
@@ -280,46 +263,14 @@
 
 <!-- Footer -->
 <footer id="footer">
-	<div class="inner">
-		<div class="flex flex-3">
-			<div class="col">
-				<h3>Vestibullum</h3>
-				<ul class="alt">
-					<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					<li><a href="#">Vis id faucibus montes tempor</a></li>
-					<li><a href="#">Massa amet lobortis vel.</a></li>
-					<li><a href="#">Nascetur nunc varius commodo.</a></li>
-				</ul>
-			</div>
-			<div class="col">
-				<h3>Lobortis</h3>
-				<ul class="alt">
-					<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					<li><a href="#">Vis id faucibus montes tempor</a></li>
-					<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					<li><a href="#">Massa amet lobortis vel.</a></li>
-				</ul>
-			</div>
-			<div class="col">
-				<h3>Accumsan</h3>
-				<ul class="alt">
-					<li><a href="#">Nascetur nunc varius commodo.</a></li>
-					<li><a href="#">Vis id faucibus montes tempor</a></li>
-					<li><a href="#">Massa amet lobortis vel.</a></li>
-					<li><a href="#">Nascetur nunc varius commodo.</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
 	<div class="copyright">
 		<ul class="icons">
-			<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-			<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-			<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-			<li><a href="#" class="icon fa-snapchat"><span class="label">Snapchat</span></a></li>
+			<li><a href="https://www.facebook.com/ambrosetreacylife/" class="icon fa-facebook"><span
+						class="label">Facebook</span></a></li>
+			<li><a href="https://www.instagram.com/ambrose_treacy_college/" class="icon fa-instagram"><span
+						class="label">Instagram</span></a></li>
 		</ul>
-		&copy; Untitled. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a
-			href="https://unsplash.com">Coverr</a>. Video: <a href="https://coverr.co">Coverr</a>.
+		&copy; Website Created by Jake Rennie for Ambrose Treacy College</a>.
 	</div>
 </footer>
 

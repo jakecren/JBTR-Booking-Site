@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">overview</h2>
-                        <a href="{{ url_for('main.splash') }}" class="au-btn btn-success">Back to RSVP Site</a>
+                        <a href="{{ url_for('admins.logout') }}" class="au-btn btn-success">Logout</a>
                     </div>
                 </div>
             </div>
@@ -105,10 +105,9 @@
                 <div class="col-lg-9">
                     <h2 class="title-1 m-b-25">Earnings By Items</h2>
                     <div class="table-responsive table--no-card m-b-40">
-                        <table class="table table-borderless table-striped table-earning">
+                        <table class="table table-borderless table-striped table-earning" id="productTable">
                             <thead>
                                 <tr>
-                                    <th>#</th>
                                     <th>Name</th>
                                     <th class="text-right">Vendor</th>
                                     <th class="text-right">Quantity</th>
@@ -127,16 +126,12 @@
                                     {% endif %}
                                     {% endfor %}
 
-                                    <td>{{ product.id }}</td>
                                     <td class="text-left">{{ product.name|replace('t_', '', 1)|replace('_', ' ') }}</td>
                                     {% for vendor in vendors %}
                                     {% if vendor.id == product.vendorID %}
                                     <td class="text-right">{{ vendor.name }}</td>
                                     {% endif %}
                                     {% endfor %}
-                                    {% if product.vendorID == None %}
-                                    <td class="text-right">ATC</td>
-                                    {% endif %}
 
                                     <td class="text-right">{{ productNS.quantity }}</td>
                                     <td class="text-right">${{ productNS.earnings|round(2) }}</td>
@@ -146,12 +141,20 @@
                         </table>
                     </div>
                 </div>
+                <script>
+                    var sorted = $('#productTable tbody tr').sort(function (a, b) {
+                        var a = $(a).find('td:last').text(), b = $(b).find('td:last').text();
+                        return b.localeCompare(a, false, { numeric: true })
+                    })
+                    $('#productTable tbody').html(sorted)
+                </script>
+
                 <div class="col-lg-3">
                     <h2 class="title-1 m-b-25">Top Vendors</h2>
                     <div class="au-card au-card--bg-blue au-card-top-countries m-b-40">
                         <div class="au-card-inner">
                             <div class="table-responsive">
-                                <table class="table table-top-countries">
+                                <table class="table table-top-countries" id="vendorTable">
                                     <tbody>
                                         {% for vendor in vendors %}
                                         {% set vendorNS = namespace(earnings=0.00) %}
@@ -171,68 +174,13 @@
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="au-card recent-report">
-                        <div class="au-card-inner">
-                            <h3 class="title-2">recent reports</h3>
-                            <div class="chart-info">
-                                <div class="chart-info__left">
-                                    <div class="chart-note">
-                                        <span class="dot dot--blue"></span>
-                                        <span>products</span>
-                                    </div>
-                                    <div class="chart-note mr-0">
-                                        <span class="dot dot--green"></span>
-                                        <span>services</span>
-                                    </div>
-                                </div>
-                                <div class="chart-info__right">
-                                    <div class="chart-statis">
-                                        <span class="index incre">
-                                            <i class="zmdi zmdi-long-arrow-up"></i>25%</span>
-                                        <span class="label">products</span>
-                                    </div>
-                                    <div class="chart-statis mr-0">
-                                        <span class="index decre">
-                                            <i class="zmdi zmdi-long-arrow-down"></i>10%</span>
-                                        <span class="label">services</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="recent-report__chart">
-                                <canvas id="recent-rep-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="au-card chart-percent-card">
-                        <div class="au-card-inner">
-                            <h3 class="title-2 tm-b-5">char by %</h3>
-                            <div class="row no-gutters">
-                                <div class="col-xl-6">
-                                    <div class="chart-note-wrap">
-                                        <div class="chart-note mr-0 d-block">
-                                            <span class="dot dot--blue"></span>
-                                            <span>products</span>
-                                        </div>
-                                        <div class="chart-note mr-0 d-block">
-                                            <span class="dot dot--red"></span>
-                                            <span>services</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6">
-                                    <div class="percent-chart">
-                                        <canvas id="percent-chart"></canvas>
-                                    </div>
-                                </div>
+                                <script>
+                                    var sorted = $('#vendorTable tbody tr').sort(function (a, b) {
+                                        var a = $(a).find('td:last').text(), b = $(b).find('td:last').text();
+                                        return b.localeCompare(a, false, { numeric: true })
+                                    })
+                                    $('#vendorTable tbody').html(sorted)
+                                </script>
                             </div>
                         </div>
                     </div>

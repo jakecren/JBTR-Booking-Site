@@ -8,6 +8,13 @@ import os, csv
 
 admins = Blueprint("admins", __name__, template_folder='templates', static_folder='static')
 
+#####  Logout User  #####
+@admins.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.splash'))
+
 
 #####  Panel  ######
 @admins.route("/panel")
@@ -96,8 +103,32 @@ def deleteCustomer(customerID):
 @login_required
 def vendorList():
     vendors = Vendors.query.all()
-    vendorD = None
-    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=vendorD)
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=None)
+
+
+####  Edit Vendor  ####
+@admins.route("/vendorList/edit/<int:vendorID>", methods=["GET", "POST"])
+@login_required
+def editVendor(vendorID):
+    vendors = Vendors.query.all()
+    form = EditVendorForm()
+    for vendor in vendors:
+        if vendor.id == vendorID:
+            if form.validate_on_submit():
+                vendor.name = form.companyName.data
+                vendor.email = str(form.companyEmail.data).lower()
+                vendor.mobile = form.companyMobile.data
+
+                db.session.commit()
+                flash("Vendor details have been updated!", "success")
+                return redirect(url_for('admins.vendorList'))
+
+            elif request.method == "GET":
+                form.companyName.data = vendor.name
+                form.companyEmail.data = vendor.email
+                form.companyMobile.data = vendor.mobile
+    
+    return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=None, editVendor=True, form=form)
 
 
 ####  Email Individual Vendor  ####
@@ -144,11 +175,60 @@ def emailVendor(vendorID):
                     'content': content.format(tbody=contentStr, total=total),
                 }
                 SGmail.send(message)
-                flash("Report has been emailed.", "success")
+                flash(f"Report has been emailed to vendor {vendor.name}.", "success")
                 return redirect(url_for('admins.vendorList'))
             else:
-                flash("Sorry, this vendor does not have an associated email, please add this and try again.", "warning")
+                flash(f"Sorry, vendor {vendor.name} does not have an associated email, please add this and try again.", "warning")
                 return redirect(url_for('admins.vendorList'))
+
+
+####  Email All Vendors  ####
+@admins.route("/vendorList/emailAll")
+@login_required
+def emailAllVendors():
+    vendors = Vendors.query.all()
+    orders = Orders.query.all()
+    products = Products.query.all()
+    for vendor in vendors:
+        if vendor.email != None:
+            message = Mail(
+                from_email="noreply@atcjbtrrsvp.com",
+                to_emails=vendor.email,
+            )
+            message.template_id = "d-a51ebb7b223d40bd92ff66781767ff3e"
+            
+            with open('bookingApp/admins/templates/admins/emails/vendorUpdate.html', 'r') as f:
+                content = f.read()
+
+            total = 0
+            contentStr = ""
+            orderedProducts = {}
+            for product in products:
+                if product.vendorID == vendor.id:
+                    for order in orders:
+                        if order.productID == product.id:
+                            if product.id in orderedProducts:
+                                orderedProducts[product.id] += order.quantity
+                            else:
+                                orderedProducts[product.id] = order.quantity
+                            total += order.quantity
+            
+                    contentStr += f"""
+                    <tr>
+                        <td>{product.name.replace("_", " ")}</td>
+                        <td>{orderedProducts.get(product.id)}</td>
+                    </tr>
+                    """
+
+            message.dynamic_template_data = {
+                'vendorName': vendor.name,
+                'content': content.format(tbody=contentStr, total=total),
+            }
+            SGmail.send(message)
+            flash(f"Report has been emailed to vendor {vendor.name}.", "success")
+        else:
+            flash(f"Sorry, vendor {vendor.name} does not have an associated email, please add this and try again.", "warning")
+    return redirect(url_for('admins.vendorList'))
 
 
 #####  Vendor List - Delete Modal  #####
@@ -256,7 +336,7 @@ def deleteProduct(productID):
 @login_required
 def addProduct():
     vendors = Vendors.query.all()
-    choices = [("", "ATC")]
+    choices = []
     for vendor in vendors:
         choices.append((f"{vendor.id}", f"{vendor.name}"))
     setattr(AddProductForm, "selectVendor", SelectField('Vendor:', choices=choices))
@@ -264,15 +344,52 @@ def addProduct():
 
     if form.validate_on_submit():
         name = form.category.data + form.name.data.replace(" ", "_")
-        if form.selectVendor.data == "":
-            product = Products(name=name, description=form.description.data, price=form.price.data)
-        else:
-            product = Products(name=name, description=form.description.data, vendorID=form.selectVendor.data, price=form.price.data)
+        product = Products(name=name, description=form.description.data, vendorID=form.selectVendor.data, price=form.price.data)
         db.session.add(product)
         db.session.commit()
         flash("Product Added", "success")
         return redirect(url_for("admins.productList"))
     return render_template("admins/addProduct.html", title="Register Vendor", form=form)
+
+
+####  Edit Product  ####
+@admins.route("/productList/edit/<int:productID>", methods=["GET", "POST"])
+@login_required
+def editProduct(productID):
+    products = Products.query.all()
+    vendors = Vendors.query.all()
+    choices = []
+    for vendor in vendors:
+        choices.append((f"{vendor.id}", f"{vendor.name}"))
+    setattr(AddProductForm, "selectVendor", SelectField('Vendor:', choices=choices))
+    form = AddProductForm()
+    for product in products:
+        if product.id == productID:
+            if form.validate_on_submit():
+                product.name = str(form.category.data + form.name.data.replace(" ", "_"))
+                product.description = form.description.data
+                product.price = form.price.data
+                product.vendorID = form.selectVendor.data
+
+                db.session.commit()
+                flash("Product details have been updated!", "success")
+                return redirect(url_for('admins.productList'))
+
+            elif request.method == "GET":
+                form.description.data = product.description
+                form.price.data = product.price
+                form.selectVendor.data = str(product.vendorID)
+                if product.name[:2] == "t_":
+                    form.category.data = "t_"
+                    form.name.data = product.name[1:].replace("_", " ")
+                else:
+                    form.category.data = ""
+                    form.name.data = product.name.replace("_", " ")
+            flash("Product details updated.", "success")
+            redirect(url_for('admins.productList'))
+
+    return render_template("admins/productList.html", title="Product List", products=products, productD=None, vendors=vendors, editProduct=True, form=form)
+
 
 ####  Add CSV Products  ####
 @admins.route("/productList/add/csv", methods=["GET", "POST"])
@@ -307,9 +424,9 @@ def addCsvProducts():
                         db.session.add(newVendor)
                         db.session.flush()
                         newVendors.append(newVendor.name)
-                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=newVendor.id)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=newVendor.id, description="")
                     else:
-                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=vendorID)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=vendorID, description="")
                     for product in products:
                         if newProduct.name == product.name:
                             duplicateProducts.append(newProduct.name)

@@ -11,7 +11,8 @@ main = Blueprint("main", __name__, template_folder='templates')
 #####  Splash  #####
 @main.route("/")
 def splash():
-    return render_template("main/splash.html", title="JBTR RSVP")
+    products = Products.query.all()
+    return render_template("main/splash.html", title="JBTR RSVP", products=products)
 
 
 #####  RSVP - Page 1  #####
