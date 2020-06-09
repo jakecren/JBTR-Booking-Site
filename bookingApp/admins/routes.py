@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app, abort
 from flask_login import login_user, current_user, logout_user, login_required
-from bookingApp import db, bcrypt
+from bookingApp import db, bcrypt, Mail, SGmail
 from bookingApp.admins.forms import *
 from bookingApp.models import *
 from werkzeug.utils import secure_filename
@@ -100,6 +100,57 @@ def vendorList():
     return render_template("admins/vendorList.html", title="Vendor List", vendors=vendors, vendorD=vendorD)
 
 
+####  Email Individual Vendor  ####
+@admins.route("/vendorList/email/<int:vendorID>")
+@login_required
+def emailVendor(vendorID):
+    vendors = Vendors.query.all()
+    orders = Orders.query.all()
+    products = Products.query.all()
+    for vendor in vendors:
+        if vendor.id == vendorID:
+            if vendor.email != None:
+                message = Mail(
+                    from_email="noreply@atcjbtrrsvp.com",
+                    to_emails=vendor.email,
+                )
+                message.template_id = "d-a51ebb7b223d40bd92ff66781767ff3e"
+                
+                with open('bookingApp/admins/templates/admins/emails/vendorUpdate.html', 'r') as f:
+                    content = f.read()
+
+                total = 0
+                contentStr = ""
+                orderedProducts = {}
+                for product in products:
+                    if product.vendorID == vendor.id:
+                        for order in orders:
+                            if order.productID == product.id:
+                                if product.id in orderedProducts:
+                                    orderedProducts[product.id] += order.quantity
+                                else:
+                                    orderedProducts[product.id] = order.quantity
+                                total += order.quantity
+                
+                        contentStr += f"""
+                        <tr>
+                            <td>{product.name.replace("_", " ")}</td>
+                            <td>{orderedProducts.get(product.id)}</td>
+                        </tr>
+                        """
+
+                message.dynamic_template_data = {
+                    'vendorName': vendor.name,
+                    'content': content.format(tbody=contentStr, total=total),
+                }
+                SGmail.send(message)
+                flash("Report has been emailed.", "success")
+                return redirect(url_for('admins.vendorList'))
+            else:
+                flash("Sorry, this vendor does not have an associated email, please add this and try again.", "warning")
+                return redirect(url_for('admins.vendorList'))
+
+
 #####  Vendor List - Delete Modal  #####
 @admins.route("/vendorList/<int:vendorID>")
 @login_required
@@ -159,23 +210,13 @@ def registerVendor():
     return render_template("admins/registerVendor.html", title="Register Vendor", form=form)
 
 
-#####  Vendor Product View  #####
-@admins.route("/VPView/<int:id>")
-@login_required
-def vendorProductView(id):
-    vendor = Vendors.query.filter_by(id=id).first_or_404()
-    products = Products.query.filter_by(vendorID=id)
-    return render_template("tempAdmins/vendorProductView.html", title="Vendor Product View", vendor=vendor, products=products)
-
-
 ####  Product List  ####
 @admins.route("/productList")
 @login_required
 def productList():
     products = Products.query.all()
-    productD = None
     vendors = Vendors.query.all()
-    return render_template("admins/productList.html", title="Product List", products=products, productD=productD, vendors=vendors)
+    return render_template("admins/productList.html", title="Product List", products=products, productD=None, vendors=vendors)
 
 
 #####  Product List - Delete Modal  #####
@@ -233,6 +274,60 @@ def addProduct():
         return redirect(url_for("admins.productList"))
     return render_template("admins/addProduct.html", title="Register Vendor", form=form)
 
+####  Add CSV Products  ####
+@admins.route("/productList/add/csv", methods=["GET", "POST"])
+@login_required
+def addCsvProducts():
+    form = AddProductsCsvForm()
+    products = Products.query.all()
+    vendors = Vendors.query.all()
+
+    if form.validate_on_submit():
+        productsCsvFN = secure_filename(form.csv.data.filename)
+        productsCsv = form.csv.data
+        csvPath = os.path.join(current_app.root_path, "admins/static/temp/", productsCsvFN)
+        productsCsv.save(csvPath)
+
+        newVendors = []
+        duplicateProducts = []
+
+        with open(csvPath) as csvFile:
+            readCSV = csv.reader(csvFile, delimiter=',')
+            i = 1
+            for row in readCSV:
+                if i != 1:
+                    products = Products.query.all()
+                    vendors = Vendors.query.all()
+                    vendorID = None
+                    for vendor in vendors:
+                        if vendor.name == row[2]:
+                            vendorID = vendor.id
+                    if vendorID == None:
+                        newVendor = Vendors(name=row[2])
+                        db.session.add(newVendor)
+                        db.session.flush()
+                        newVendors.append(newVendor.name)
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=newVendor.id)
+                    else:
+                        newProduct = Products(name=row[0].replace(" ", "_"), price=int(row[1]), vendorID=vendorID)
+                    for product in products:
+                        if newProduct.name == product.name:
+                            duplicateProducts.append(newProduct.name)
+                    if newProduct.name not in duplicateProducts:
+                        db.session.add(newProduct)
+                        db.session.commit()
+                    else:
+                        db.session.rollback()
+                else:
+                    i += 1
+        if newVendors != []:
+            flash(f"The products were added successfully.  The following vendors were added: {', '.join(newVendors)}.  The following products were detected as duplicates, and were not added: {', '.join(duplicateProducts)}.", "success")
+        else:
+            flash(f"The products were added successfully.  The following products were detected as duplicates, and were not added: {', '.join(duplicateProducts)}.", "success")
+        return redirect(url_for('admins.productList'))
+
+    return render_template("admins/productList.html", title="Product List", products=products, productD=None, vendors=vendors, form=form, addProducts=True)
+
 
 ####  Student Volunteers  ####
 @admins.route("/students/")
@@ -263,9 +358,9 @@ def addStudents():
             volunteers.append(student)
     
     if form.validate_on_submit():
-        studnetsCsvFN = secure_filename(form.csv.data.filename)
+        studentsCsvFN = secure_filename(form.csv.data.filename)
         studentsCsv = form.csv.data
-        csvPath = os.path.join(current_app.root_path, "admins/static/temp/", studnetsCsvFN)
+        csvPath = os.path.join(current_app.root_path, "admins/static/temp/", studentsCsvFN)
         studentsCsv.save(csvPath)
 
         with open(csvPath) as csvFile:

@@ -65,3 +65,8 @@ class EditUserForm(FlaskForm):
 class AddStudentsForm(FlaskForm):
     csv = FileField("Upload .CSV File", validators=[FileAllowed(["csv"]), FileRequired()])
     submit = SubmitField("Add Students")
+
+
+class AddProductsCsvForm(FlaskForm):
+    csv = FileField("Upload .CSV File", validators=[FileAllowed(["csv"]), FileRequired()])
+    submit = SubmitField("Add Products")

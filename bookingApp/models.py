@@ -36,8 +36,8 @@ class Customers(db.Model):
 class Vendors(db.Model): #Company info (company name, company email etc.)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False, unique=True)
-    email = db.Column(db.String(60), nullable=False, unique=True)
-    mobile = db.Column(db.String(12), nullable=False, unique=True)
+    email = db.Column(db.String(60), nullable=True, unique=True)
+    mobile = db.Column(db.String(12), nullable=True, unique=True)
     userID = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
     products = db.relationship("Products")

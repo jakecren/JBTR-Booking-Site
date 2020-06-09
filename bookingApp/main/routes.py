@@ -111,7 +111,7 @@ db.session.add(order)""")
         session.clear()
 
         message = Mail(
-            from_email='donotreply@atcjbtrrsvp.com',
+            from_email='noreply@atcjbtrrsvp.com',
             to_emails=customer[2],
             subject='RSVP Successful')
         message.template_id = "d-25f51cfbf3ca459585aa2a61ff4feb82"
