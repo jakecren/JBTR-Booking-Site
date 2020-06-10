@@ -21,18 +21,20 @@
 <div>
 
 	<!-- One (id=content) -->
-	<section class="wrapper style1">
+	<section class="wrapper style1" style="height: 105vh;">
 		<div class="inner">
 			<header class="align-center" id="content">
 				<h2>RSVP</h2>
 				<p>Press below to RSVP, for more information, scroll down!</p>
 			</header>
 			<!-- 2 Column Picture Section -->
-			<div class="video align-center">
-				<div class="image fit">
-					<img src="/static/images/rsvp.jpg" alt="" />
+			<div class="align-center" style="max-height: 60vh; max-width: 65%; margin:auto;">
+				<div class="video" style="max-height: 90%;">
+					<div class="image fit">
+						<img src="/static/images/rsvp.jpg" alt="" />
+					</div>
+					<a href="{{ url_for('main.rsvp') }}" class="link"><span>Click Me</span></a>
 				</div>
-				<a href="{{ url_for('main.rsvp') }}" class="link"><span>Click Me</span></a>
 			</div>
 			<div class="align-center">
 				<a href="#about" class="button big alt scrolly">Event Information</a>
@@ -50,48 +52,53 @@
 					college in the brisbane city catchement.</p>
 			</header>
 			<h4>Available Tickets:</h4>
-			<table class="table-wrapper">
-				<thead>
-					<tr>
-						<th>Product</th>
-						<th>Description</th>
-						<th>Price</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for product in products %}
-					{% if product.name[:2] == 't_' %}
-					<tr>
-						<td>{{ product.name[2:]|replace('_', ' ') }}</td>
-						<td>{{ product.description }}</td>
-						<td>${{ product.price }}</td>
-					</tr>
-					{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
+			<div style="max-height: 40vh; overflow:auto;">
+				<table class="table-wrapper">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Description</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for product in products %}
+						{% if product.name[:2] == 't_' %}
+						<tr>
+							<td>{{ product.name[2:]|replace('_', ' ') }}</td>
+							<td>{{ product.description }}</td>
+							<td>${{ product.price }}</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 
 			<h4>Available Catering Options:</h4>
-			<table class="table-wrapper">
-				<thead>
-					<tr>
-						<th>Product</th>
-						<th>Description</th>
-						<th>Price</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for product in products %}
-					{% if product.name[:2] != 't_' %}
-					<tr>
-						<td>{{ product.name|replace('_', ' ') }}</td>
-						<td style="max-width: 300px; overflow: auto">{{ product.description }}</td>
-						<td>${{ product.price }}</td>
-					</tr>
-					{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
+			<div style="max-height: 40vh; overflow:auto;">
+				<table class="table-wrapper">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Description</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for product in products %}
+						{% if product.name[:2] != 't_' %}
+						<tr>
+							<td>{{ product.name|replace('_', ' ') }}</td>
+							<td style="max-width: 300px; overflow: auto">{{ product.description }}</td>
+							<td>${{ product.price }}</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div><br></div>
 			<div class="align-center">
 				<a href="#gallery" class="button big alt scrolly">Gallery</a>
 			</div>
